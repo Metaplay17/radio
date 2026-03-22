@@ -29,7 +29,7 @@ public class Licence {
     private LocalDate registered;
 
     @Column(name = "duration", nullable = true)
-    private Integer duration;
+    private int duration;
 
     public LicenceDto toDto() {
         return new LicenceDto(id ,trackId, registered, duration);
@@ -38,5 +38,11 @@ public class Licence {
     @ManyToOne
     @JoinColumn(name = "track_id")
     private Track track;
+
+    public Licence(long trackId, LocalDate registered, int duration) {
+        this.trackId = trackId;
+        this.registered = registered;
+        this.duration = duration;
+    }
 }
 

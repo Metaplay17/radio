@@ -41,4 +41,11 @@ public class Playlist {
     @ManyToOne
     @JoinColumn(name = "creator_id")
     private User creator;
+
+    public Playlist(String name, String description, LocalDateTime datetime, int duration) {
+        this.name = name;
+        this.description = description;
+        this.datetime = datetime;
+        this.duration = duration;
+    }
 }

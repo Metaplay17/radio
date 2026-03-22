@@ -40,4 +40,10 @@ public class AudioFeature {
     @ManyToOne
     @JoinColumn(name = "feature_type_id")
     private AudioFeatureType featureType;
+
+    public AudioFeature(long trackId, int featureTypeId, double value) {
+        this.trackId = trackId;
+        this.featureTypeId = featureTypeId;
+        this.value = value;
+    }
 }

@@ -1,10 +1,8 @@
 package org.example.services;
 
-import java.util.Optional;
-
+import org.example.aspects.NotNullArg;
 import org.example.entities.User;
 import org.example.exceptions.ConflictException;
-import org.example.exceptions.IncorrectArgumentGivenException;
 import org.example.exceptions.UserNotFoundException;
 import org.example.repositories.UserRepository;
 import org.example.requests.CreateUserRequest;
@@ -35,18 +33,12 @@ public class UserService implements UserDetailsService {
             throw new ConflictException("Username уже используется");
         }
 
-        User user = new User();
-        user.setEmail(request.getEmail());
-        user.setUsername(request.getUsername());
-        user.setPasswordHash(passwordEncoder.encode(request.getPassword()));
-        user.setPrivilegeLevel(request.getPrivilegeLevel());
+        User user = new User(request.getUsername(), passwordEncoder.encode(request.getPassword()), request.getEmail(), request.getPrivilegeLevel());
         userRepository.save(user);
     }
 
+    @NotNullArg
     public User getUserByUsername(String username) {
-        if (username == null) {
-            throw new IncorrectArgumentGivenException("Передан null username");
-        }
 
         User user = userRepository.findByUsername(username)
             .orElseThrow(() -> new UserNotFoundException("Пользователь с username = " + username + " не найден"));

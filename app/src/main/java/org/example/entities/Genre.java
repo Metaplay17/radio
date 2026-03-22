@@ -1,5 +1,6 @@
 package org.example.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.example.entities.dto.GenreDto;
@@ -29,5 +30,9 @@ public class Genre {
     }
 
     @OneToMany(mappedBy = "genre")
-    private List<Track> tracks;
+    private List<Track> tracks = new ArrayList<Track>();
+
+    public Genre(String name) {
+        this.name = name;
+    }
 }

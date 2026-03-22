@@ -1,5 +1,6 @@
 package org.example.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.example.entities.dto.UserDto;
@@ -39,7 +40,14 @@ public class User {
     }
 
     @OneToMany(mappedBy = "creator")
-    private List<Playlist> playlists;
+    private List<Playlist> playlists = new ArrayList<Playlist>();
+
+    public User(String username, String passwordHash, String email, int privilegeLevel) {
+        this.username = username;
+        this.passwordHash = passwordHash;
+        this.email = email;
+        this.privilegeLevel = privilegeLevel;
+    }
 
     public Privileges getStringPrivilegeLevel() {
         if (privilegeLevel == 1) {

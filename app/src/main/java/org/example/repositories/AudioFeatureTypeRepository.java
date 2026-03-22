@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface AudioFeatureTypeRepository extends JpaRepository<AudioFeatureType, Integer> {
-    
+    boolean existsByName(String name);
 }

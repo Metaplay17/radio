@@ -1,7 +1,7 @@
 package org.example.exceptions;
 
 public class IncorrectArgumentGivenException extends RuntimeException {
-    public IncorrectArgumentGivenException(String message) {
-        super(message);
+    public IncorrectArgumentGivenException(String methodName, String argumentName, String problem) {
+        super("В методе " + methodName + " аргумент " + argumentName + " " + problem);
     }
 }

@@ -6,5 +6,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface InteractionTypeRepository extends JpaRepository<InteractionType, Integer> {
-    
+    boolean existsByName(String name);
 }

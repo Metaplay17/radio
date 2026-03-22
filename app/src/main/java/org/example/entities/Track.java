@@ -1,5 +1,6 @@
 package org.example.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.example.entities.dto.TrackDto;
@@ -44,15 +45,22 @@ public class Track {
     private Artist artist;
 
     @OneToMany(mappedBy = "track")
-    private List<Licence> licences;
+    private List<Licence> licences = new ArrayList<Licence>();
 
     @ManyToOne
     @JoinColumn(name = "genre_id")
     private Genre genre;
 
     @OneToMany(mappedBy = "track")
-    private List<Interaction> interactions;
+    private List<Interaction> interactions = new ArrayList<Interaction>();
 
     @OneToMany(mappedBy = "track")
-    private List<AudioFeature> audioFeatures;
+    private List<AudioFeature> audioFeatures = new ArrayList<AudioFeature>();
+
+    public Track(String title, int genreId, int artistId, int duration) {
+        this.title = title;
+        this.genreId = genreId;
+        this.artistId = artistId;
+        this.duration = duration;
+    }
 }

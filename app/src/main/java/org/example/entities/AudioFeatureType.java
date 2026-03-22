@@ -1,5 +1,6 @@
 package org.example.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.example.entities.dto.AudioFeatureTypeDto;
@@ -29,5 +30,9 @@ public class AudioFeatureType {
     }
 
     @OneToMany(mappedBy = "audioFeatureType")
-    private List<AudioFeature> audioFeatures;
+    private List<AudioFeature> audioFeatures = new ArrayList<AudioFeature>();
+
+    public AudioFeatureType(String name) {
+        this.name = name;
+    }
 }

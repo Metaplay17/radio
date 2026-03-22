@@ -1,5 +1,6 @@
 package org.example.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.example.entities.dto.ArtistDto;
@@ -29,5 +30,9 @@ public class Artist {
     }
 
     @OneToMany(mappedBy = "artist")
-    private List<Track> tracks;
+    private List<Track> tracks = new ArrayList<Track>();
+
+    public Artist(String name) {
+        this.name = name;
+    }
 }

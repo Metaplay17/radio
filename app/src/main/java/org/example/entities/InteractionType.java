@@ -1,5 +1,6 @@
 package org.example.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.example.entities.dto.InteractionTypeDto;
@@ -29,5 +30,9 @@ public class InteractionType {
     }
 
     @OneToMany(mappedBy = "interactionType")
-    private List<Interaction> interactions;
+    private List<Interaction> interactions = new ArrayList<Interaction>();
+
+    public InteractionType(String name) {
+        this.name = name;
+    }
 }

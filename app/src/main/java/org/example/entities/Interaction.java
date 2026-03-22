@@ -32,7 +32,7 @@ public class Interaction {
     private String context;
 
     @Column(name = "datetime", nullable = false)
-    private LocalDateTime datetime;
+    private LocalDateTime datetime = LocalDateTime.now();
 
     public InteractionDto toDto() {
         return new InteractionDto(id, trackId, context, interactionTypeId, datetime);
@@ -45,4 +45,10 @@ public class Interaction {
     @ManyToOne
     @JoinColumn(name = "interaction_type_id")
     private InteractionType interactionType;
+
+    public Interaction(int interactionTypeId, long trackId, String context) {
+        this.interactionTypeId = interactionTypeId;
+        this.trackId = trackId;
+        this.context = context;
+    }
 }
