@@ -13,20 +13,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "interactions")
 @Data
+@NoArgsConstructor
 public class Interaction {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(name = "interaction_type_id", nullable = false)
-    private int interactionTypeId;
-
-    @Column(name = "track_id", nullable = false)
-    private long trackId;
 
     @Column(name = "context", nullable = true)
     private String context;
@@ -35,7 +31,7 @@ public class Interaction {
     private LocalDateTime datetime = LocalDateTime.now();
 
     public InteractionDto toDto() {
-        return new InteractionDto(id, trackId, context, interactionTypeId, datetime);
+        return new InteractionDto(id, track.getId(), context, interactionType.getId(), datetime);
     }
 
     @ManyToOne
@@ -46,9 +42,9 @@ public class Interaction {
     @JoinColumn(name = "interaction_type_id")
     private InteractionType interactionType;
 
-    public Interaction(int interactionTypeId, long trackId, String context) {
-        this.interactionTypeId = interactionTypeId;
-        this.trackId = trackId;
+    public Interaction(InteractionType interactionType, Track track, String context) {
+        this.interactionType = interactionType;
+        this.track = track;
         this.context = context;
     }
 }

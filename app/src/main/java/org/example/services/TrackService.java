@@ -1,6 +1,8 @@
 package org.example.services;
 
 import org.example.aspects.NotNullArg;
+import org.example.entities.Artist;
+import org.example.entities.Genre;
 import org.example.entities.Track;
 import org.example.exceptions.ConflictException;
 import org.example.repositories.ArtistRepository;
@@ -28,19 +30,14 @@ public class TrackService {
         String title = request.getTitle();
         int duration = request.getDuration();
 
-        if (!artistRepository.existsById(artistId)) {
-            throw new ConflictException("Исполнителя с id = " + artistId + " нет в базе");
-        }
-
-        if (!genreRepository.existsById(genreId)) {
-            throw new ConflictException("Жанра с id = " + genreId + " нет в базе");
-        }
+        Artist artist = artistRepository.findById(artistId).orElseThrow(() -> new ConflictException("Исполнителя с id = " + artistId + " нет в базе"));
+        Genre genre = genreRepository.findById(genreId).orElseThrow(() -> new ConflictException("Жанра с id = " + genreId + " нет в базе"));
 
         if (trackRepository.existsByTitle(title)) {
             throw new ConflictException("Трек с названием = " + title + " уже существует");
         }
 
-        Track track = new Track(title, genreId, artistId, duration);
+        Track track = new Track(title, genre, artist, duration);
         trackRepository.save(track);
     }
 }

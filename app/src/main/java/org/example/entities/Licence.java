@@ -13,17 +13,16 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "licences")
 @Data
+@NoArgsConstructor
 public class Licence {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
-
-    @Column(name = "track_id", nullable = false)
-    private long trackId;
 
     @Column(name = "registered", nullable = false)
     private LocalDate registered;
@@ -32,15 +31,15 @@ public class Licence {
     private int duration;
 
     public LicenceDto toDto() {
-        return new LicenceDto(id ,trackId, registered, duration);
+        return new LicenceDto(id ,track.getId(), registered, duration);
     }
 
     @ManyToOne
     @JoinColumn(name = "track_id")
     private Track track;
 
-    public Licence(long trackId, LocalDate registered, int duration) {
-        this.trackId = trackId;
+    public Licence(Track track, LocalDate registered, int duration) {
+        this.track = track;
         this.registered = registered;
         this.duration = duration;
     }

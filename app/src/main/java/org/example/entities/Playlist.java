@@ -13,10 +13,12 @@ import jakarta.persistence.JoinColumn;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Table(name = "playlists")
 @Entity
 @Data
+@NoArgsConstructor
 public class Playlist {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -42,10 +44,11 @@ public class Playlist {
     @JoinColumn(name = "creator_id")
     private User creator;
 
-    public Playlist(String name, String description, LocalDateTime datetime, int duration) {
+    public Playlist(String name, User creator, String description, LocalDateTime datetime, int duration) {
         this.name = name;
         this.description = description;
         this.datetime = datetime;
         this.duration = duration;
+        this.creator = creator;
     }
 }

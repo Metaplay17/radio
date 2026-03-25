@@ -2,6 +2,8 @@ package org.example.services;
 
 import org.example.aspects.NotNullArg;
 import org.example.entities.Interaction;
+import org.example.entities.InteractionType;
+import org.example.entities.Track;
 import org.example.exceptions.ConflictException;
 import org.example.repositories.InteractionRepository;
 import org.example.repositories.InteractionTypeRepository;
@@ -27,15 +29,11 @@ public class InteractionService {
         int interactionTypeId = request.getInteractionTypeId();
         String context = request.getContext();
 
-        if (!trackRepository.existsById(trackId)) {
-            throw new ConflictException("Трека с id = " + trackId + " нет в базе");
-        }
+        Track track = trackRepository.findById(trackId).orElseThrow(() -> new ConflictException("Трека с id = " + trackId + " нет в базе"));
+        InteractionType interactionType = interactionTypeRepository.findById(interactionTypeId).orElseThrow(() -> new ConflictException("Типа взаимодействия с id = " + interactionTypeId + " нет в базе"));
 
-        if (!interactionTypeRepository.existsById(interactionTypeId)) {
-            throw new ConflictException("Типа взаимодействия с id = " + interactionTypeId + " нет в базе");
-        }
 
-        Interaction interaction = new Interaction(interactionTypeId, trackId, context);
+        Interaction interaction = new Interaction(interactionType, track, context);
         interactionRepository.save(interaction);
     }
 }

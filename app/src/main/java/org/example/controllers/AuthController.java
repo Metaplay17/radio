@@ -11,7 +11,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/api")
+@RestController
 public class AuthController {
     
     private UserService userService;
@@ -24,7 +24,7 @@ public class AuthController {
         this.authenticationManager = authenticationManager;
     }
 
-    @PostMapping("/public/auth/login")
+    @PostMapping("/api/public/auth/login")
     public ResponseEntity<LoginResponse> login(@RequestBody LoginRequest request) {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
         authenticationManager.authenticate(token);

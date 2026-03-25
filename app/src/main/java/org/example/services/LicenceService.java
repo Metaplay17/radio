@@ -4,6 +4,7 @@ import java.time.LocalDate;
 
 import org.example.aspects.NotNullArg;
 import org.example.entities.Licence;
+import org.example.entities.Track;
 import org.example.exceptions.ConflictException;
 import org.example.repositories.LicenceRepository;
 import org.example.repositories.TrackRepository;
@@ -26,11 +27,9 @@ public class LicenceService {
         int duration = request.getDuration();
         LocalDate registered = request.getRegistered();
 
-        if (!trackRepository.existsById(trackId)) {
-            throw new ConflictException("Трека с id = " + trackId + " нет в базе");
-        }
+        Track track = trackRepository.findById(trackId).orElseThrow(() -> new ConflictException("Трека с id = " + trackId + " нет в базе"));
 
-        Licence licence = new Licence(trackId, registered, duration);
+        Licence licence = new Licence(track, registered, duration);
         licenceRepository.save(licence);
     }
 }

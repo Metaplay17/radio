@@ -22,10 +22,8 @@ public class UserService implements UserDetailsService {
         this.passwordEncoder = passwordEncoder;
     }
 
+    @NotNullArg
     public void createUser(CreateUserRequest request) {
-        if (request == null) {
-            throw new IllegalArgumentException("Передан null Request");
-        }
         if (userRepository.existsByEmail(request.getUsername())) {
             throw new ConflictException("Email уже используется");
         }

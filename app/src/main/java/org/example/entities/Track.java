@@ -15,10 +15,12 @@ import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 import lombok.Data;
+import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name = "tracks")
 @Data
+@NoArgsConstructor
 public class Track {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -27,17 +29,17 @@ public class Track {
     @Column(name = "title", nullable = false)
     private String title;
 
-    @Column(name = "genre_id", nullable = false)
-    private int genreId;
+    // @Column(name = "genre_id", nullable = false)
+    // private int genreId;
 
-    @Column(name = "artist_id", nullable = false)
-    private int artistId;
+    // @Column(name = "artist_id", nullable = false)
+    // private int artistId;
 
     @Column(name = "duration", nullable = false)
     private int duration;
 
     public TrackDto toDto() {
-        return new TrackDto(id, title, artistId, genreId, duration);
+        return new TrackDto(id, title, artist.getId(), genre.getId(), duration);
     }
 
     @ManyToOne
@@ -57,10 +59,10 @@ public class Track {
     @OneToMany(mappedBy = "track")
     private List<AudioFeature> audioFeatures = new ArrayList<AudioFeature>();
 
-    public Track(String title, int genreId, int artistId, int duration) {
+    public Track(String title, Genre genre, Artist artist, int duration) {
         this.title = title;
-        this.genreId = genreId;
-        this.artistId = artistId;
+        this.genre = genre;
+        this.artist = artist;
         this.duration = duration;
     }
 }

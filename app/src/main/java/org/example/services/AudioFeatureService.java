@@ -2,6 +2,8 @@ package org.example.services;
 
 import org.example.aspects.NotNullArg;
 import org.example.entities.AudioFeature;
+import org.example.entities.AudioFeatureType;
+import org.example.entities.Track;
 import org.example.exceptions.ConflictException;
 import org.example.repositories.AudioFeatureRepository;
 import org.example.repositories.AudioFeatureTypeRepository;
@@ -27,15 +29,10 @@ public class AudioFeatureService {
         int featureTypeId = request.getFeatureTypeId();
         double value = request.getValue();
 
-        if (!trackRepository.existsById(trackId)) {
-            throw new ConflictException("Трека с id = " + trackId + " нет в базе");
-        }
+        Track track = trackRepository.findById(trackId).orElseThrow(() -> new ConflictException("Трека с id = " + trackId + " нет в базе"));
+        AudioFeatureType audioFeatureType = audioFeatureTypeRepository.findById(featureTypeId).orElseThrow(() -> new ConflictException("Признака с id = " + trackId + " нет в базе"));
 
-        if (!audioFeatureTypeRepository.existsById(featureTypeId)) {
-            throw new ConflictException("Признака с id = " + trackId + " нет в базе");
-        }
-
-        AudioFeature audioFeature = new AudioFeature(trackId, featureTypeId, value);
+        AudioFeature audioFeature = new AudioFeature(track, audioFeatureType, value);
         audioFeatureRepository.save(audioFeature);
     }
 }

@@ -40,6 +40,10 @@ dependencies {
 
     // Source: https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-api
     implementation 'io.jsonwebtoken:jjwt-api:0.13.0'
+    // Source: https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-impl
+    runtimeOnly 'io.jsonwebtoken:jjwt-impl:0.13.0'
+    // Source: https://mvnrepository.com/artifact/io.jsonwebtoken/jjwt-gson
+    implementation 'io.jsonwebtoken:jjwt-gson:0.13.0'
 }
 
 testing {
