@@ -4,14 +4,16 @@ import org.example.exceptions.AccessDeniedException;
 import org.example.requests.CreateUserRequest;
 import org.example.services.UserService;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.core.Authentication;
 import org.springframework.security.core.GrantedAuthority;
-import org.springframework.security.core.annotation.AuthenticationPrincipal;
-import org.springframework.security.core.userdetails.UserDetails;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-@RestController("/api/admin")
+import jakarta.validation.Valid;
+
+@RestController
 public class AdminController {
     private final UserService userService;
 
@@ -19,9 +21,11 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @PostMapping("/users")
-    public ResponseEntity<String> createUser(@AuthenticationPrincipal UserDetails userDetails, @RequestBody CreateUserRequest request) {
-        if (!userDetails.getAuthorities().stream().anyMatch((GrantedAuthority a) -> a.getAuthority().equals("ADMIN"))) {
+    @PostMapping("/api/admin/users")
+    public ResponseEntity<String> createUser(@RequestBody @Valid CreateUserRequest request) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        System.out.println(authentication.getAuthorities());
+        if (!authentication.getAuthorities().stream().anyMatch((GrantedAuthority a) -> (a.getAuthority().equals("ROLE_ADMIN") | a.getAuthority().equals("ROLE_SYSTEM")))) {
             throw new AccessDeniedException("Доступно только администраторам");
         }
 

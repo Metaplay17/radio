@@ -5,6 +5,7 @@ import java.lang.reflect.Parameter;
 
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.Signature;
+import org.aspectj.lang.annotation.Around;
 import org.aspectj.lang.annotation.Aspect;
 import org.aspectj.lang.reflect.MethodSignature;
 import org.example.exceptions.IncorrectArgumentGivenException;
@@ -14,6 +15,7 @@ import org.springframework.stereotype.Component;
 @Component
 public class NullArgumentAspect {
     
+    @Around("@annotation(NotNullArg)")
     public Object checkNullArgument(ProceedingJoinPoint jp) throws Throwable {
         Signature signature = jp.getSignature();
         MethodSignature methodSignature = (MethodSignature)signature;

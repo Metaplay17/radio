@@ -7,11 +7,10 @@ import java.util.Date;
 import javax.crypto.SecretKey;
 
 import org.example.entities.User;
+import org.example.exceptions.InvalidJwtException;
 import org.springframework.core.env.Environment;
-import org.springframework.security.authentication.AuthenticationCredentialsNotFoundException;
 import org.springframework.stereotype.Service;
 
-import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
 import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
@@ -33,7 +32,7 @@ public class JwtService {
     
     public String generateToken(User user) {
         return Jwts.builder()
-            .claim("userId", user.getId())
+            .claim("username", user.getUsername())
             .issuer("This Application")
             .issuedAt(Date.from(Instant.now()))
             .expiration(Date.from(Instant.now().plusSeconds(expirationSeconds)))
@@ -41,11 +40,11 @@ public class JwtService {
             .compact();
     }
 
-    public Long parseUserIdFromToken(String token) {
+    public String parseUsernameFromToken(String token) {
         try {
-            return Long.valueOf(((Claims)Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload()).getSubject());
-        } catch (MalformedJwtException | ClassCastException | SecurityException | ExpiredJwtException | IllegalArgumentException ex) {
-            throw new AuthenticationCredentialsNotFoundException("Токен не валиден");
+            return String.valueOf(Jwts.parser().verifyWith(key).build().parseSignedClaims(token).getPayload().get("username"));
+        } catch (MalformedJwtException | SecurityException | ExpiredJwtException ex) {
+            throw new InvalidJwtException("Токен не валиден");
         }
     }
 }

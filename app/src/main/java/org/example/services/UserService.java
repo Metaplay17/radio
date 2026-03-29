@@ -24,7 +24,7 @@ public class UserService implements UserDetailsService {
 
     @NotNullArg
     public void createUser(CreateUserRequest request) {
-        if (userRepository.existsByEmail(request.getUsername())) {
+        if (userRepository.existsByEmail(request.getEmail())) {
             throw new ConflictException("Email уже используется");
         }
         if (userRepository.existsByUsername(request.getUsername())) {
@@ -51,6 +51,5 @@ public class UserService implements UserDetailsService {
             .orElseThrow(() -> new UserNotFoundException("Пользователь с username = " + username + " не найден"));
 
         return new SecurityUser(user);
-
     }
 }
