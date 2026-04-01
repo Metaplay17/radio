@@ -52,19 +52,22 @@ public class User {
     }
 
     public Privileges getStringPrivilegeLevel() {
-        if (privilegeLevel == 1) {
-            return Privileges.ROLE_CONTENT_MANAGER;
+        if (privilegeLevel == 5) {
+            return Privileges.ROLE_ANALYST;
         }
-        else if (privilegeLevel == 2) {
+        else if (privilegeLevel == 10) {
             return Privileges.ROLE_LICENCE_MANAGER;
         }
-        else if (privilegeLevel == 3) {
+        else if (privilegeLevel == 25) {
+            return Privileges.ROLE_CONTENT_MANAGER;
+        }
+        else if (privilegeLevel == 50) {
             return Privileges.ROLE_REDACTOR;
         }
-        else if (privilegeLevel == 4) {
+        else if (privilegeLevel == 100) {
             return Privileges.ROLE_ADMIN;
         }
-        else if (privilegeLevel == 5) {
+        else if (privilegeLevel == 120) {
             return Privileges.ROLE_SYSTEM;
         }
         throw new IllegalArgumentException("Некорректный уровень привилегий у пользователя ID = " + id + " PrivilegeLevel = " + privilegeLevel);

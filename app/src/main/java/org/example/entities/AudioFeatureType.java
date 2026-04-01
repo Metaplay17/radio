@@ -16,7 +16,7 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "audio_features")
+@Table(name = "audio_features_types")
 @NoArgsConstructor
 @Data
 public class AudioFeatureType {

@@ -1,5 +1,8 @@
 package org.example.services;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import org.example.aspects.NotNullArg;
 import org.example.entities.Interaction;
 import org.example.entities.InteractionType;
@@ -9,6 +12,7 @@ import org.example.repositories.InteractionRepository;
 import org.example.repositories.InteractionTypeRepository;
 import org.example.repositories.TrackRepository;
 import org.example.requests.CreateInteractionRequest;
+import org.example.requests.InteractionDto;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -25,15 +29,19 @@ public class InteractionService {
 
     @NotNullArg
     public void addInteraction(CreateInteractionRequest request) {
-        long trackId = request.getTrackId();
-        int interactionTypeId = request.getInteractionTypeId();
-        String context = request.getContext();
+        List<Interaction> interactions = new ArrayList<Interaction>();
 
-        Track track = trackRepository.findById(trackId).orElseThrow(() -> new ConflictException("Трека с id = " + trackId + " нет в базе"));
-        InteractionType interactionType = interactionTypeRepository.findById(interactionTypeId).orElseThrow(() -> new ConflictException("Типа взаимодействия с id = " + interactionTypeId + " нет в базе"));
+        request.getInteractions().forEach((InteractionDto i) -> {
+            long trackId = i.getTrackId();
+            int interactionTypeId = i.getInteractionTypeId();
+            String context = i.getContext();
 
+            Track track = trackRepository.findById(trackId).orElseThrow(() -> new ConflictException("Трека с id = " + trackId + " нет в базе"));
+            InteractionType interactionType = interactionTypeRepository.findById(interactionTypeId).orElseThrow(() -> new ConflictException("Типа взаимодействия с id = " + interactionTypeId + " нет в базе"));
 
-        Interaction interaction = new Interaction(interactionType, track, context);
-        interactionRepository.save(interaction);
+            Interaction interaction = new Interaction(interactionType, track, context);
+            interactions.add(interaction);
+        });
+        interactionRepository.saveAll(interactions);
     }
 }

@@ -19,7 +19,7 @@ public class ArtistController {
     }
 
     @PostMapping("/api/artists")
-    @CheckRole(roles = {"CONTENT_MANAGER"})
+    @CheckRole(roles = {"ROLE_CONTENT_MANAGER"})
     public ResponseEntity<String> createArtist(@RequestBody @Valid CreateArtistRequest request) {
         artistService.addArtist(request);
         return ResponseEntity.status(201).body("Исполнитель успешно добавлен");

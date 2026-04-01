@@ -29,6 +29,10 @@ public class AudioFeatureService {
         int featureTypeId = request.getFeatureTypeId();
         double value = request.getValue();
 
+        if (audioFeatureRepository.existsByIdTrackIdAndIdFeatureTypeId(trackId, featureTypeId)) {
+            throw new ConflictException("Признак такого типа уже задан для этого трека");
+        }
+
         Track track = trackRepository.findById(trackId).orElseThrow(() -> new ConflictException("Трека с id = " + trackId + " нет в базе"));
         AudioFeatureType audioFeatureType = audioFeatureTypeRepository.findById(featureTypeId).orElseThrow(() -> new ConflictException("Признака с id = " + trackId + " нет в базе"));
 

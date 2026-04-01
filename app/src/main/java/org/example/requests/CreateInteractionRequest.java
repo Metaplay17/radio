@@ -1,16 +1,14 @@
 package org.example.requests;
 
-import jakarta.validation.constraints.Positive;
+import java.util.List;
+
+import org.hibernate.validator.constraints.Length;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
 @Data
 @AllArgsConstructor
 public class CreateInteractionRequest {
-    @Positive(message = "Идентификатор трека должен быть положительным числом")
-    private long trackId;
-
-    @Positive(message = "Идентификатор типа взаимодействия должен быть положительным числом")
-    private int interactionTypeId;
-    private String context;
+    @Length(min = 1, message = "Список взапимодействий не может быть пустым")
+    List<InteractionDto> interactions;
 }

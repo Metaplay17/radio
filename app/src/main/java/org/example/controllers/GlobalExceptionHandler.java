@@ -10,10 +10,12 @@ import org.example.responses.ErrorResponse;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import org.springframework.web.servlet.resource.NoResourceFoundException;
 
 @RestControllerAdvice
 public class GlobalExceptionHandler {
@@ -31,14 +33,24 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(400).body(new ErrorResponse(HttpStatus.BAD_REQUEST, message.trim()));
     }
 
+    @ExceptionHandler(HttpMessageNotReadableException.class)
+    public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(HttpMessageNotReadableException e) {
+        return ResponseEntity.status(400).body(new ErrorResponse(HttpStatus.BAD_REQUEST, "Проверьте правильность заполнения полей"));
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
         return ResponseEntity.status(403).body(new ErrorResponse(HttpStatus.FORBIDDEN, e.getMessage()));
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<ErrorResponse> handleConflictException(UserNotFoundException e) {
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
         return ResponseEntity.status(404).body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage()));
+    }
+
+    @ExceptionHandler(NoResourceFoundException.class)
+    public ResponseEntity<ErrorResponse> handleNoResourceFoundException(NoResourceFoundException e) {
+        return ResponseEntity.status(404).body(new ErrorResponse(HttpStatus.NOT_FOUND, "Запрашиваемый ресурс не найден"));
     }
 
     @ExceptionHandler(ConflictException.class)

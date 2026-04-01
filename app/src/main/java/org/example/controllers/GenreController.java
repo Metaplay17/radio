@@ -20,7 +20,7 @@ public class GenreController {
     }
 
     @PostMapping("/api/genres")
-    @CheckRole(roles = {"CONTENT_MANAGER"})
+    @CheckRole(roles = {"ROLE_CONTENT_MANAGER"})
     public ResponseEntity<String> createGenre(@RequestBody @Valid CreateGenreRequest request) {
 
         genreService.addGenre(request);

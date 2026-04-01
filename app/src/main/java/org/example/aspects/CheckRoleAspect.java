@@ -19,7 +19,7 @@ public class CheckRoleAspect {
     @Around("@annotation(CheckRole)")
     public Object checkRole(ProceedingJoinPoint jp, List<String> roles) throws Throwable {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
-        if (!authentication.getAuthorities().stream().anyMatch((GrantedAuthority a) -> a.getAuthority().equals("ROLE_CONTENT_MANAGER"))) {
+        if (!authentication.getAuthorities().stream().anyMatch((GrantedAuthority a) -> roles.contains(a.getAuthority()))) {
             throw new AccessDeniedException("Доступно только следующим ролям: " + roles.stream().collect(Collectors.joining(", ")));
         }
 
