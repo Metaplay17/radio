@@ -11,6 +11,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToMany;
 import jakarta.persistence.ManyToOne;
 import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
@@ -58,6 +59,9 @@ public class Track {
 
     @OneToMany(mappedBy = "track")
     private List<AudioFeature> audioFeatures = new ArrayList<AudioFeature>();
+
+    @ManyToMany(mappedBy = "tracks")
+    private List<Playlist> playlists = new ArrayList<Playlist>();
 
     public Track(String title, Genre genre, Artist artist, int duration) {
         this.title = title;

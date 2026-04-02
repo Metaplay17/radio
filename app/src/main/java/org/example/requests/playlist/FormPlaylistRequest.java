@@ -1,7 +1,9 @@
-package org.example.requests;
+package org.example.requests.playlist;
 
 import java.util.Map;
 import java.util.Optional;
+
+import org.example.requests.Daytime;
 
 import jakarta.validation.constraints.Max;
 import jakarta.validation.constraints.Min;

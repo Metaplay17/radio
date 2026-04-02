@@ -1,5 +1,6 @@
 package org.example.services;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -7,11 +8,16 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.PriorityQueue;
 
+import org.example.entities.Playlist;
 import org.example.entities.Track;
+import org.example.entities.User;
 import org.example.exceptions.ConflictException;
+import org.example.exceptions.UserNotFoundException;
 import org.example.repositories.PlaylistRepository;
 import org.example.repositories.TrackRepository;
-import org.example.requests.FormPlaylistRequest;
+import org.example.repositories.UserRepository;
+import org.example.requests.playlist.ConfirmPlaylistRequest;
+import org.example.requests.playlist.FormPlaylistRequest;
 import org.example.responses.TrackScoreDto;
 import org.springframework.stereotype.Service;
 
@@ -20,11 +26,13 @@ public class PlaylistService {
     private final PlaylistRepository playlistRepository;
     private final TrackRepository trackRepository;
     private final RecomendationService recomendationService;
+    private final UserRepository userRepository;
 
-    public PlaylistService(PlaylistRepository playlistRepository, TrackRepository trackRepository, RecomendationService recomendationService) {
+    public PlaylistService(PlaylistRepository playlistRepository, TrackRepository trackRepository, RecomendationService recomendationService, UserRepository userRepository) {
         this.playlistRepository = playlistRepository;
         this.trackRepository = trackRepository;
         this.recomendationService = recomendationService;
+        this.userRepository = userRepository;
     }
 
     public List<TrackScoreDto> formPlaylist(FormPlaylistRequest request) {
@@ -66,5 +74,18 @@ public class PlaylistService {
             result.add(new TrackScoreDto(trackScores.get(sc).toDto(), sc));
         }
         return result.reversed();
+    }
+
+    public void confirmPlaylist(ConfirmPlaylistRequest request, String creatorUsername) {
+        User creator = userRepository.findByUsername(creatorUsername).orElseThrow(() -> new UserNotFoundException("Пользователя с username = " + creatorUsername + " нет в базе"));
+        Playlist playlist = new Playlist(request.getName(), creator, request.getDescription(), LocalDateTime.now(), 0);
+        Integer duration = 0;
+        for (Long trackId : request.getTracks()) {
+            Track track = trackRepository.findById(trackId).orElseThrow(() -> new ConflictException("Трека с ID = " + trackId + " нет в базе"));
+            duration += track.getDuration();
+            playlist.addTrack(track);
+        }
+        playlist.setDuration(duration);
+        playlistRepository.save(playlist);
     }
 }
