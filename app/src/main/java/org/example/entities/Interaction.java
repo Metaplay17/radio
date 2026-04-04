@@ -1,6 +1,8 @@
 package org.example.entities;
 
+import java.time.Instant;
 import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 import org.example.entities.dto.InteractionDto;
 
@@ -42,9 +44,10 @@ public class Interaction {
     @JoinColumn(name = "interaction_type_id")
     private InteractionType interactionType;
 
-    public Interaction(InteractionType interactionType, Track track, String context) {
+    public Interaction(InteractionType interactionType, Track track, String context, Long msec) {
         this.interactionType = interactionType;
         this.track = track;
         this.context = context;
+        this.datetime = LocalDateTime.ofInstant(Instant.ofEpochMilli(msec), ZoneId.systemDefault());
     }
 }

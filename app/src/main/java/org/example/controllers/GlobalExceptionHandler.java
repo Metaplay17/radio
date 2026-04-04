@@ -5,6 +5,7 @@ import java.util.stream.Collectors;
 import org.example.exceptions.AccessDeniedException;
 import org.example.exceptions.ConflictException;
 import org.example.exceptions.IncorrectArgumentGivenException;
+import org.example.exceptions.NotFoundException;
 import org.example.exceptions.UserNotFoundException;
 import org.example.responses.ErrorResponse;
 import org.slf4j.Logger;
@@ -45,6 +46,11 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(UserNotFoundException.class)
     public ResponseEntity<ErrorResponse> handleUserNotFoundException(UserNotFoundException e) {
+        return ResponseEntity.status(404).body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage()));
+    }
+
+    @ExceptionHandler(NotFoundException.class)
+    public ResponseEntity<ErrorResponse> handleUserNotFoundException(NotFoundException e) {
         return ResponseEntity.status(404).body(new ErrorResponse(HttpStatus.NOT_FOUND, e.getMessage()));
     }
 
