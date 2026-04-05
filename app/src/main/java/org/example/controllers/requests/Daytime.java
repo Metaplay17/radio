@@ -1,4 +1,4 @@
-package org.example.requests;
+package org.example.controllers.requests;
 
 public enum Daytime {
     MORNING,

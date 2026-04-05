@@ -8,7 +8,7 @@ import lombok.Data;
 public class TrackDto {
     private long id;
     private String title;
-    private int artistId;
-    private int genreId;
+    private String artistName;
+    private String genreName;
     private int duration;
 }

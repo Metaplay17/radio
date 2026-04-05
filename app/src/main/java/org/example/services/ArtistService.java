@@ -1,10 +1,10 @@
 package org.example.services;
 
 import org.example.aspects.NotNullArg;
+import org.example.controllers.requests.CreateArtistRequest;
 import org.example.entities.Artist;
 import org.example.exceptions.ConflictException;
 import org.example.repositories.ArtistRepository;
-import org.example.requests.CreateArtistRequest;
 import org.springframework.stereotype.Service;
 
 @Service

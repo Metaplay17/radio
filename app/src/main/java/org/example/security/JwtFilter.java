@@ -5,8 +5,7 @@ import java.util.List;
 
 import org.example.controllers.FilterExceptionHandler;
 import org.example.exceptions.InvalidJwtException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.example.services.LoggingService;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.context.SecurityContextHolder;
@@ -23,16 +22,17 @@ import jakarta.servlet.http.HttpServletResponse;
 
 @Component
 public class JwtFilter extends OncePerRequestFilter {
-    private final static Logger logger = LoggerFactory.getLogger(JwtFilter.class);
     private final static List<String> PUBLIC_PATH_LIST = List.of("/api/public/auth/login");
     private final JwtService jwtService;
     private final FilterExceptionHandler filterExceptionHandler;
     private final UserDetailsService userDetailsService;
+    private final LoggingService loggingService;
 
-    public JwtFilter(JwtService jwtService, FilterExceptionHandler filterExceptionHandler, UserDetailsService userDetailsService) {
+    public JwtFilter(JwtService jwtService, FilterExceptionHandler filterExceptionHandler, UserDetailsService userDetailsService, LoggingService loggingService) {
         this.jwtService = jwtService;
         this.filterExceptionHandler = filterExceptionHandler;
         this.userDetailsService = userDetailsService;
+        this.loggingService = loggingService;
     }
     
     @Override
@@ -57,6 +57,7 @@ public class JwtFilter extends OncePerRequestFilter {
             }
         }
         else {
+            loggingService.info("Попытка доступа без валидного токена", "UNKNOWN");
             filterExceptionHandler.handleException(response, new InvalidJwtException("Нет токена"), "Нет токена", HttpStatus.UNAUTHORIZED);
         }
     }

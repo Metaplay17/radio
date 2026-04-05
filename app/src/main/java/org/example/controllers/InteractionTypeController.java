@@ -1,7 +1,7 @@
 package org.example.controllers;
 
 import org.example.aspects.CheckRole;
-import org.example.requests.CreateInteractionTypeRequest;
+import org.example.controllers.requests.CreateInteractionTypeRequest;
 import org.example.services.InteractionTypeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

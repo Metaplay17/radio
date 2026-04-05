@@ -1,4 +1,4 @@
-package org.example.requests;
+package org.example.controllers.requests;
 
 import jakarta.validation.constraints.NotBlank;
 import lombok.AllArgsConstructor;

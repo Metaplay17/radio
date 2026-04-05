@@ -1,7 +1,7 @@
 package org.example.controllers;
 
 import org.example.aspects.CheckRole;
-import org.example.requests.CreateTrackRequest;
+import org.example.controllers.requests.track.CreateTrackRequest;
 import org.example.services.TrackService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

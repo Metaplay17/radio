@@ -1,4 +1,4 @@
-package org.example.requests;
+package org.example.controllers.requests.track;
 
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Positive;

@@ -1,8 +1,9 @@
 package org.example.controllers;
 
-import org.example.requests.LoginRequest;
-import org.example.responses.LoginResponse;
+import org.example.controllers.requests.LoginRequest;
+import org.example.controllers.responses.LoginResponse;
 import org.example.security.JwtService;
+import org.example.services.LoggingService;
 import org.example.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -19,11 +20,13 @@ public class AuthController {
     private UserService userService;
     private JwtService jwtService;
     private AuthenticationManager authenticationManager;
+    private final LoggingService loggingService;
 
-    public AuthController(UserService userService, JwtService jwtService, AuthenticationManager authenticationManager) {
+    public AuthController(UserService userService, JwtService jwtService, AuthenticationManager authenticationManager, LoggingService loggingService) {
         this.userService = userService;
         this.jwtService = jwtService;
         this.authenticationManager = authenticationManager;
+        this.loggingService = loggingService;
     }
 
     @PostMapping("/api/public/auth/login")
@@ -32,6 +35,7 @@ public class AuthController {
         authenticationManager.authenticate(token);
 
         String jwtToken = jwtService.generateToken(userService.getUserByUsername(request.getUsername()));
+        loggingService.info("Пользователь " + request.getUsername() + " авторизовался", request.getUsername());
         return ResponseEntity.ok(new LoginResponse(jwtToken));
     }
 }

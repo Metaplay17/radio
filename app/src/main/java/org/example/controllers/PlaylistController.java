@@ -3,10 +3,10 @@ package org.example.controllers;
 import java.util.List;
 
 import org.example.aspects.CheckRole;
-import org.example.requests.playlist.ConfirmPlaylistRequest;
-import org.example.requests.playlist.FormPlaylistRequest;
-import org.example.responses.PlaylistResponse;
-import org.example.responses.TrackScoreDto;
+import org.example.controllers.requests.playlist.ConfirmPlaylistRequest;
+import org.example.controllers.requests.playlist.FormPlaylistRequest;
+import org.example.controllers.responses.PlaylistResponse;
+import org.example.controllers.responses.TrackScoreDto;
 import org.example.services.PlaylistService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.Authentication;

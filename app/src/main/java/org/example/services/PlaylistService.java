@@ -1,5 +1,6 @@
 package org.example.services;
 
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -8,17 +9,22 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.PriorityQueue;
 
+import org.example.aspects.NotNullArg;
+import org.example.controllers.requests.playlist.ConfirmPlaylistRequest;
+import org.example.controllers.requests.playlist.FormPlaylistRequest;
+import org.example.controllers.requests.track.TrackSignature;
+import org.example.controllers.responses.TrackScoreDto;
 import org.example.entities.Playlist;
 import org.example.entities.Track;
 import org.example.entities.User;
-import org.example.exceptions.ConflictException;
+import org.example.exceptions.LicenceExpiredException;
+import org.example.exceptions.NotFoundException;
+import org.example.exceptions.RotationOverusedException;
 import org.example.exceptions.UserNotFoundException;
+import org.example.repositories.LicenceRepository;
 import org.example.repositories.PlaylistRepository;
 import org.example.repositories.TrackRepository;
 import org.example.repositories.UserRepository;
-import org.example.requests.playlist.ConfirmPlaylistRequest;
-import org.example.requests.playlist.FormPlaylistRequest;
-import org.example.responses.TrackScoreDto;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -26,25 +32,33 @@ public class PlaylistService {
     private final PlaylistRepository playlistRepository;
     private final TrackRepository trackRepository;
     private final RecomendationService recomendationService;
+    private final RotationService rotationService;
     private final UserRepository userRepository;
+    private final LicenceRepository licenceRepository;
 
-    public PlaylistService(PlaylistRepository playlistRepository, TrackRepository trackRepository, RecomendationService recomendationService, UserRepository userRepository) {
+    public PlaylistService(PlaylistRepository playlistRepository, TrackRepository trackRepository, RecomendationService recomendationService, UserRepository userRepository, RotationService rotationService, LicenceRepository licenceRepository) {
         this.playlistRepository = playlistRepository;
         this.trackRepository = trackRepository;
         this.recomendationService = recomendationService;
         this.userRepository = userRepository;
+        this.rotationService = rotationService;
+        this.licenceRepository = licenceRepository;
     }
 
+    @NotNullArg
     public List<TrackScoreDto> formPlaylist(FormPlaylistRequest request) {
-        Optional<Long> anchorTrackId = request.getAnchorTrackId();
-        List<Track> tracks = trackRepository.findAllWithActiveLicense();
+        Optional<TrackSignature> anchorTrackSignature = request.getAnchorTrack();
+        LocalDate date = request.getDate();
+        List<Track> tracks = trackRepository.findAllWithActiveLicense(date);
+        tracks = rotationService.getAvailableTracks(tracks);
 
         Map<Double, Track> trackScores = new HashMap<Double, Track>();
         PriorityQueue<Double> queue = new PriorityQueue<Double>();
         List<TrackScoreDto> result = new ArrayList<TrackScoreDto>();
 
-        if (anchorTrackId.isPresent()) {
-            Track anchorTrack = trackRepository.findById(anchorTrackId.get()).orElseThrow(() -> new ConflictException("Трека с ID = " + anchorTrackId + " нет в базе"));
+        if (anchorTrackSignature.isPresent()) {
+            Track anchorTrack = trackRepository.findByTitleAndArtistName(anchorTrackSignature.get().getTitle(), anchorTrackSignature.get().getArtistName()).orElseThrow(
+                () -> new NotFoundException("Трека с названием = " + anchorTrackSignature.get().getTitle() + " и исполнителем " + anchorTrackSignature.get().getArtistName() + " нет в базе"));
 
             for (Track track : tracks) {
                 double score = recomendationService.calcAnchorTrackScore(anchorTrack, track);
@@ -76,16 +90,28 @@ public class PlaylistService {
         return result.reversed();
     }
 
+    @NotNullArg
     public void confirmPlaylist(ConfirmPlaylistRequest request, String creatorUsername) {
         User creator = userRepository.findByUsername(creatorUsername).orElseThrow(() -> new UserNotFoundException("Пользователя с username = " + creatorUsername + " нет в базе"));
         Playlist playlist = new Playlist(request.getName(), creator, request.getDescription(), LocalDateTime.now(), 0);
         Integer duration = 0;
-        for (Long trackId : request.getTracks()) {
-            Track track = trackRepository.findById(trackId).orElseThrow(() -> new ConflictException("Трека с ID = " + trackId + " нет в базе"));
+        LocalDate date = request.getDate();
+        for (TrackSignature trackSignature : request.getTracks()) {
+            Track track = trackRepository.findByTitleAndArtistName(trackSignature.getTitle(), trackSignature.getArtistName()).orElseThrow(() -> new NotFoundException("Трека с названием = " + trackSignature.getTitle() + " и исполнителем = " + trackSignature.getArtistName() + " нет в базе"));
+            if (!isLicenceTrackAvailable(track, date)) {
+                throw new LicenceExpiredException("У трека " + track.getTitle() + " закончилась лицензия");
+            }
+            if (!rotationService.isAvailable(track, date)) {
+                throw new RotationOverusedException("У трека " + track.getTitle() + " закончилась ротация");
+            }
             duration += track.getDuration();
             playlist.addTrack(track);
         }
         playlist.setDuration(duration);
         playlistRepository.save(playlist);
+    }
+
+    private boolean isLicenceTrackAvailable(Track track, LocalDate date) {
+        return licenceRepository.checkLicenceByTrackId(track.getId(), date);
     }
 }

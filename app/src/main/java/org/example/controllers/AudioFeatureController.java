@@ -1,7 +1,7 @@
 package org.example.controllers;
 
 import org.example.aspects.CheckRole;
-import org.example.requests.CreateAudioFeatureRequest;
+import org.example.controllers.requests.CreateAudioFeatureRequest;
 import org.example.services.AudioFeatureService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

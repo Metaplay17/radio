@@ -1,7 +1,11 @@
-package org.example.requests.playlist;
+package org.example.controllers.requests.playlist;
 
+import java.time.LocalDate;
 import java.util.List;
 
+import org.example.controllers.requests.track.TrackSignature;
+
+import jakarta.validation.constraints.FutureOrPresent;
 import jakarta.validation.constraints.NotEmpty;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -14,5 +18,8 @@ public class ConfirmPlaylistRequest {
     private String description;
     
     @NotEmpty(message = "Содержание плейлиста не может быть пустым")
-    private List<Long> tracks;
+    private List<TrackSignature> tracks;
+
+    @FutureOrPresent
+    private LocalDate date;
 }

@@ -1,4 +1,4 @@
-package org.example.responses;
+package org.example.controllers.responses;
 
 import java.util.List;
 

@@ -1,14 +1,14 @@
 package org.example.services;
 
-import java.time.Instant;
 import java.time.LocalDateTime;
-import java.time.ZoneId;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
 import org.example.aspects.NotNullArg;
+import org.example.controllers.requests.CreateInteractionRequest;
+import org.example.controllers.requests.InteractionDto;
 import org.example.entities.Interaction;
 import org.example.entities.InteractionType;
 import org.example.entities.Track;
@@ -16,9 +16,8 @@ import org.example.entities.dto.InteractionAnalyticDto;
 import org.example.exceptions.NotFoundException;
 import org.example.repositories.InteractionRepository;
 import org.example.repositories.InteractionTypeRepository;
+import org.example.repositories.InteractionTypeStats;
 import org.example.repositories.TrackRepository;
-import org.example.requests.CreateInteractionRequest;
-import org.example.requests.InteractionDto;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -52,11 +51,20 @@ public class InteractionService {
         interactionRepository.saveAll(interactions);
     }
 
-    public List<InteractionAnalyticDto> getInteractionsAnalytics(String interactionTypeName, Long msecFrom, Long msecTo, Integer count, Long trackId) {
-        InteractionType interactionType = interactionTypeRepository.findByName(interactionTypeName).orElseThrow(() -> new NotFoundException("Типа взаимодействия с именем " + interactionTypeName + " нет в базе"));
-        List<Interaction> interactions = interactionRepository.findAnalyticInteraction(interactionType.getId(), LocalDateTime.ofInstant(Instant.ofEpochMilli(msecFrom), ZoneId.systemDefault()), LocalDateTime.ofInstant(Instant.ofEpochMilli(msecTo), ZoneId.systemDefault()), count, trackId);
+    public List<InteractionAnalyticDto> getInteractionsAnalytics(String interactionTypeName, LocalDateTime from, LocalDateTime to, Integer count, Long trackId) {
+        Integer interactionTypeId = null;
+        if (interactionTypeName != null) {
+            interactionTypeId = interactionTypeRepository.findByName(interactionTypeName).orElseThrow(() -> new NotFoundException("Типа взаимодействия с именем " + interactionTypeName + " нет в базе")).getId();
+        }
+        List<Interaction> interactions = interactionRepository.findAnalyticInteraction(interactionTypeId, from, to, count, trackId);
         Map<Object, Object> interactionsTracks = interactions.stream().collect(Collectors.toMap(i -> i, i -> i.getTrack()));
-        List<InteractionAnalyticDto> result = interactionsTracks.keySet().stream().map(o -> ((Track)o)).collect(Collectors.toList()).stream().map(it -> new InteractionAnalyticDto(it.toDto(), ((Interaction)interactionsTracks.get(it)).getContext(), interactionTypeName, ((Interaction)interactionsTracks.get(it)).getDatetime())).collect(Collectors.toList());
+        List<InteractionAnalyticDto> result = interactionsTracks.keySet().stream().collect(Collectors.toList()).stream().map(it -> new InteractionAnalyticDto(((Interaction)it).getTrack().toDto(), ((Interaction)it).getContext(), ((Interaction)it).getInteractionType().getName(), ((Interaction)it).getDatetime())).collect(Collectors.toList());
         return result;
+    }
+
+    public List<InteractionTypeStats> formRaoReport(LocalDateTime from, LocalDateTime to) {
+        Integer interactionTypeId = interactionTypeRepository.findByName("FULL_LISTENING").orElseThrow(() -> new NotFoundException("Типа взаимодействия с именем " + "FULL_LISTENING" + " нет в базе")).getId();
+        List<InteractionTypeStats> stats = interactionRepository.findTracksGroupedInteractions(interactionTypeId, from, to);
+        return stats;
     }
 }

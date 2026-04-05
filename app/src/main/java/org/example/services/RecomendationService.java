@@ -5,13 +5,14 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import org.example.aspects.NotNullArg;
+import org.example.controllers.requests.Daytime;
 import org.example.entities.AudioFeature;
 import org.example.entities.AudioFeatureType;
 import org.example.entities.Track;
 import org.example.exceptions.IncorrectArgumentGivenException;
 import org.example.repositories.AudioFeatureRepository;
 import org.example.repositories.AudioFeatureTypeRepository;
-import org.example.requests.Daytime;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -28,12 +29,13 @@ public class RecomendationService {
         this.audioFeatureRepository = audioFeatureRepository;
     }
     
+    @NotNullArg
     public double calcAnchorTrackScore(Track anchorTrack, Track assessedTrack) {
         int score = 50;
         List<AudioFeature> assessedAudioFeatures = assessedTrack.getAudioFeatures();
         Map<Object, Object> assessedFeatureMap = assessedAudioFeatures.stream().collect(Collectors.toMap(f -> f.getAudioFeatureType().getId(), f -> f.getValue()));
 
-        List<AudioFeature> anchorAudioFeatures =anchorTrack.getAudioFeatures();
+        List<AudioFeature> anchorAudioFeatures = anchorTrack.getAudioFeatures();
         Map<Object, Object> anchorFeatureMap = anchorAudioFeatures.stream().collect(Collectors.toMap(f -> f.getAudioFeatureType().getId(), f -> f.getValue()));
 
         for (Object featureTypeId : anchorFeatureMap.keySet()) {
@@ -45,6 +47,8 @@ public class RecomendationService {
 
         return score;
     }
+
+    @NotNullArg
     public double calcTrackScore(Track track, Daytime daytime, boolean isWeekend) {
         double score = 0;
         Optional<AudioFeatureType> daytimeFeature = null;

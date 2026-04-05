@@ -1,7 +1,7 @@
 package org.example.controllers;
 
 import org.example.aspects.CheckRole;
-import org.example.requests.CreateGenreRequest;
+import org.example.controllers.requests.CreateGenreRequest;
 import org.example.services.GenreService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;

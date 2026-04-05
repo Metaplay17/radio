@@ -3,12 +3,14 @@ package org.example.services;
 import java.time.LocalDate;
 
 import org.example.aspects.NotNullArg;
+import org.example.controllers.requests.licence.CreateLicenceRequest;
+import org.example.controllers.requests.licence.RemoveLicenceRequest;
+import org.example.controllers.requests.track.TrackSignature;
 import org.example.entities.Licence;
 import org.example.entities.Track;
-import org.example.exceptions.ConflictException;
+import org.example.exceptions.NotFoundException;
 import org.example.repositories.LicenceRepository;
 import org.example.repositories.TrackRepository;
-import org.example.requests.CreateLicenceRequest;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -23,13 +25,22 @@ public class LicenceService {
 
     @NotNullArg
     public void addLicence(CreateLicenceRequest request) {
-        long trackId = request.getTrackId();
+        TrackSignature trackSignature = request.getTrack();
         int duration = request.getDuration();
         LocalDate registered = request.getRegistered();
 
-        Track track = trackRepository.findById(trackId).orElseThrow(() -> new ConflictException("Трека с id = " + trackId + " нет в базе"));
+        Track track = trackRepository.findByTitleAndArtistName(trackSignature.getTitle(), trackSignature.getArtistName()).orElseThrow(() -> new NotFoundException("Трека с названием = " + trackSignature.getTitle() + " нет в базе"));
 
         Licence licence = new Licence(track, registered, duration);
         licenceRepository.save(licence);
+    }
+
+    @NotNullArg
+    public void removeLicence(RemoveLicenceRequest request) {
+        Licence licence = licenceRepository.findById(request.getLicenceId()).orElseThrow(() -> new NotFoundException("Лицензии с id = " + request.getLicenceId() + " нет в базе"));
+        LocalDate registered = licence.getRegistered();
+        LocalDate now = LocalDate.now();
+        Long daysGone = registered.datesUntil(now).count();
+        licence.setDuration(daysGone.intValue());
     }
 }

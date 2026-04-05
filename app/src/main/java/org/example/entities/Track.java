@@ -40,7 +40,7 @@ public class Track {
     private int duration;
 
     public TrackDto toDto() {
-        return new TrackDto(id, title, artist.getId(), genre.getId(), duration);
+        return new TrackDto(id, title, artist.getName(), genre.getName(), duration);
     }
 
     @ManyToOne

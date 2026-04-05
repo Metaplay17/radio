@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.aspects.NotNullArg;
+import org.example.controllers.requests.track.CreateTrackRequest;
 import org.example.entities.Artist;
 import org.example.entities.Genre;
 import org.example.entities.Track;
@@ -8,7 +9,6 @@ import org.example.exceptions.ConflictException;
 import org.example.repositories.ArtistRepository;
 import org.example.repositories.GenreRepository;
 import org.example.repositories.TrackRepository;
-import org.example.requests.CreateTrackRequest;
 import org.springframework.stereotype.Service;
 
 @Service

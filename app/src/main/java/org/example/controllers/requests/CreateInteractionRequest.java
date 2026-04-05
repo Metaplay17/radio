@@ -1,4 +1,4 @@
-package org.example.requests;
+package org.example.controllers.requests;
 
 import java.util.List;
 

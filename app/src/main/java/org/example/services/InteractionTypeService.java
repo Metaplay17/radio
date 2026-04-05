@@ -1,10 +1,10 @@
 package org.example.services;
 
 import org.example.aspects.NotNullArg;
+import org.example.controllers.requests.CreateInteractionTypeRequest;
 import org.example.entities.InteractionType;
 import org.example.exceptions.ConflictException;
 import org.example.repositories.InteractionTypeRepository;
-import org.example.requests.CreateInteractionTypeRequest;
 import org.springframework.stereotype.Service;
 
 @Service

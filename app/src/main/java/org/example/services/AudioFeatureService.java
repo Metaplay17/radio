@@ -1,6 +1,7 @@
 package org.example.services;
 
 import org.example.aspects.NotNullArg;
+import org.example.controllers.requests.CreateAudioFeatureRequest;
 import org.example.entities.AudioFeature;
 import org.example.entities.AudioFeatureType;
 import org.example.entities.Track;
@@ -8,7 +9,6 @@ import org.example.exceptions.ConflictException;
 import org.example.repositories.AudioFeatureRepository;
 import org.example.repositories.AudioFeatureTypeRepository;
 import org.example.repositories.TrackRepository;
-import org.example.requests.CreateAudioFeatureRequest;
 import org.springframework.stereotype.Service;
 
 @Service

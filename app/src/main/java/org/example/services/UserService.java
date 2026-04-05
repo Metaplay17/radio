@@ -1,11 +1,11 @@
 package org.example.services;
 
 import org.example.aspects.NotNullArg;
+import org.example.controllers.requests.CreateUserRequest;
 import org.example.entities.User;
 import org.example.exceptions.ConflictException;
 import org.example.exceptions.UserNotFoundException;
 import org.example.repositories.UserRepository;
-import org.example.requests.CreateUserRequest;
 import org.example.security.SecurityUser;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;

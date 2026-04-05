@@ -2,18 +2,20 @@ package org.example.controllers;
 
 import java.util.stream.Collectors;
 
+import org.example.controllers.responses.ErrorResponse;
 import org.example.exceptions.AccessDeniedException;
 import org.example.exceptions.ConflictException;
 import org.example.exceptions.IncorrectArgumentGivenException;
 import org.example.exceptions.NotFoundException;
+import org.example.exceptions.RotationOverusedException;
 import org.example.exceptions.UserNotFoundException;
-import org.example.responses.ErrorResponse;
 import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.resource.NoResourceFoundException;
@@ -39,8 +41,18 @@ public class GlobalExceptionHandler {
         return ResponseEntity.status(400).body(new ErrorResponse(HttpStatus.BAD_REQUEST, "Проверьте правильность заполнения полей"));
     }
 
+    @ExceptionHandler(MissingServletRequestParameterException.class)
+    public ResponseEntity<ErrorResponse> handleMissingServletRequestParameterException(MissingServletRequestParameterException e) {
+        return ResponseEntity.status(400).body(new ErrorResponse(HttpStatus.BAD_REQUEST, "Не задан обязательный параметр: " + e.getParameterName()));
+    }
+
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
+        return ResponseEntity.status(403).body(new ErrorResponse(HttpStatus.FORBIDDEN, e.getMessage()));
+    }
+
+    @ExceptionHandler(RotationOverusedException.class)
+    public ResponseEntity<ErrorResponse> handleRotationOverusedException(RotationOverusedException e) {
         return ResponseEntity.status(403).body(new ErrorResponse(HttpStatus.FORBIDDEN, e.getMessage()));
     }
 

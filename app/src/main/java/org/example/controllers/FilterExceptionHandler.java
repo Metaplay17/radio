@@ -2,7 +2,7 @@ package org.example.controllers;
 
 import java.io.IOException;
 
-import org.example.responses.ErrorResponse;
+import org.example.controllers.responses.ErrorResponse;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
