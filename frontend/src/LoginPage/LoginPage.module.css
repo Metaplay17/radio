@@ -1,0 +1,131 @@
+/* Базовые переменные (можно вынести в глобальный CSS, если используется дизайн-система) */
+:root {
+  --login-primary: #4a90e2;
+  --login-primary-hover: #357abd;
+  --login-bg: #f4f6f9;
+  --login-card-bg: #ffffff;
+  --login-text: #1a1a1a;
+  --login-text-secondary: #6b7280;
+  --login-border: #e2e8f0;
+  --login-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --login-radius: 12px;
+  --login-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  background-color: var(--login-bg);
+  padding: 24px;
+  box-sizing: border-box;
+}
+
+.card {
+  background: var(--login-card-bg);
+  padding: 2.5rem 2rem;
+  border-radius: var(--login-radius);
+  box-shadow: var(--login-shadow);
+  width: 100%;
+  max-width: 420px;
+  text-align: center;
+}
+
+.title {
+  font-size: 1.2rem;
+  font-weight: 600;
+  color: var(--login-text);
+  margin: 0 0 0.5rem;
+  line-height: 1.4;
+}
+
+.subtitle {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--login-text);
+  margin: 0 0 1.5rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.inputGroup {
+  text-align: left;
+}
+
+.label {
+  display: block;
+  font-size: 0.875rem;
+  color: var(--login-text-secondary);
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  font-size: 1rem;
+  border: 1.5px solid var(--login-border);
+  border-radius: 8px;
+  background-color: #fafbfc;
+  color: var(--login-text);
+  transition: var(--login-transition);
+  box-sizing: border-box;
+}
+
+.input::placeholder {
+  color: #a0aec0;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--login-primary);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+  background-color: #fff;
+}
+
+.button {
+  width: 100%;
+  padding: 0.85rem;
+  font-size: 1rem;
+  font-weight: 600;
+  color: #ffffff;
+  background-color: var(--login-primary);
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: var(--login-transition);
+  margin-top: 0.5rem;
+}
+
+.button:hover:not(:disabled) {
+  background-color: var(--login-primary-hover);
+  transform: translateY(-1px);
+}
+
+.button:active:not(:disabled) {
+  transform: translateY(0);
+}
+
+.button:disabled {
+  background-color: #93b8e8;
+  cursor: not-allowed;
+  opacity: 0.8;
+}
+
+/* Адаптив для мобильных */
+@media (max-width: 480px) {
+  .card {
+    padding: 1.75rem 1.25rem;
+  }
+  .title {
+    font-size: 1.1rem;
+  }
+  .subtitle {
+    font-size: 1.5rem;
+  }
+}

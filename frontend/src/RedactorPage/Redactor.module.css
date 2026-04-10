@@ -1,0 +1,305 @@
+:root {
+  --me-primary: #4a90e2;
+  --me-primary-hover: #357abd;
+  --me-danger: #e53e3e;
+  --me-danger-hover: #c53030;
+  --me-bg: #f8fafc;
+  --me-card-bg: #ffffff;
+  --me-border: #e2e8f0;
+  --me-text: #0f172a;
+  --me-text-secondary: #64748b;
+  --me-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --me-radius: 10px;
+  --me-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page {
+  min-height: 100vh;
+  background-color: var(--me-bg);
+  color: var(--me-text);
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  background: var(--me-card-bg);
+  border-bottom: 1px solid var(--me-border);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.mainTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.userBlock {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.username {
+  font-weight: 500;
+  color: var(--me-text-secondary);
+}
+
+.logoutBtn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1.5px solid var(--me-border);
+  border-radius: 6px;
+  color: var(--me-text-secondary);
+  cursor: pointer;
+  transition: var(--me-transition);
+  font-weight: 500;
+}
+
+.logoutBtn:hover {
+  border-color: var(--me-danger);
+  color: var(--me-danger);
+  background: rgba(229, 62, 62, 0.05);
+}
+
+/* Navigation */
+.navButtons {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  flex-wrap: wrap;
+}
+
+.navBtn {
+  padding: 0.65rem 1.25rem;
+  background: var(--me-card-bg);
+  border: 1.5px solid var(--me-border);
+  border-radius: 8px;
+  color: var(--me-text);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--me-transition);
+}
+
+.navBtn:hover {
+  border-color: var(--me-primary);
+  color: var(--me-primary);
+  box-shadow: var(--me-shadow);
+}
+
+/* Main Layout */
+.content {
+  display: grid;
+  grid-template-columns: 320px 1fr;
+  gap: 1.5rem;
+  padding: 1.5rem 2rem;
+  flex: 1;
+  align-items: start;
+}
+
+@media (max-width: 900px) {
+  .content {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Panels */
+.leftPanel, .rightPanel {
+  background: var(--me-card-bg);
+  border-radius: var(--me-radius);
+  box-shadow: var(--me-shadow);
+  padding: 1.5rem;
+  border: 1px solid var(--me-border);
+}
+
+.panelTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0 0 1.25rem;
+  color: var(--me-text);
+}
+
+/* Forms */
+.filterForm, .playlistForm {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.formGroup label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--me-text-secondary);
+}
+
+.input, .select, .textarea {
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid var(--me-border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: #fafbfc;
+  color: var(--me-text);
+  transition: var(--me-transition);
+  font-family: inherit;
+}
+
+.input:focus, .select:focus, .textarea:focus {
+  outline: none;
+  border-color: var(--me-primary);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+  background: #fff;
+}
+
+.textarea {
+  resize: vertical;
+}
+
+/* Buttons */
+.primaryBtn, .secondaryBtn, .deleteBtn {
+  padding: 0.75rem;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--me-transition);
+  font-family: inherit;
+}
+
+.primaryBtn {
+  background: var(--me-primary);
+  color: #fff;
+  margin-top: 0.5rem;
+}
+
+.primaryBtn:hover {
+  background: var(--me-primary-hover);
+  transform: translateY(-1px);
+}
+
+.secondaryBtn {
+  background: #f1f5f9;
+  color: var(--me-text);
+  border: 1.5px dashed var(--me-border);
+  margin-bottom: 1rem;
+  width: 100%;
+}
+
+.secondaryBtn:hover {
+  background: #e2e8f0;
+  border-color: #cbd5e1;
+}
+
+/* Tracks Section */
+.tracksSection {
+  margin-top: 1.5rem;
+  padding-top: 1.5rem;
+  border-top: 1px solid var(--me-border);
+}
+
+.emptyState {
+  text-align: center;
+  color: var(--me-text-secondary);
+  padding: 2rem 0;
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.tracksList {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  max-height: 400px;
+  overflow-y: auto;
+  padding-right: 4px;
+}
+
+.tracksList::-webkit-scrollbar {
+  width: 6px;
+}
+
+.tracksList::-webkit-scrollbar-thumb {
+  background: #cbd5e1;
+  border-radius: 4px;
+}
+
+.trackRow {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.75rem 1rem;
+  background: #f8fafc;
+  border: 1px solid var(--me-border);
+  border-radius: 8px;
+  transition: var(--me-transition);
+}
+
+.trackRow:hover {
+  background: #f1f5f9;
+  border-color: #cbd5e1;
+}
+
+.trackInfo {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+  flex-wrap: wrap;
+}
+
+.trackTitle {
+  font-weight: 600;
+  color: var(--me-text);
+}
+
+.trackArtist {
+  color: var(--me-text-secondary);
+  font-size: 0.9rem;
+}
+
+.trackDuration {
+  color: var(--me-text-secondary);
+  font-size: 0.85rem;
+  background: #e2e8f0;
+  padding: 0.2rem 0.5rem;
+  border-radius: 4px;
+  font-variant-numeric: tabular-nums;
+}
+
+.deleteBtn {
+  background: transparent;
+  color: var(--me-danger);
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+  border: 1.5px solid transparent;
+}
+
+.confirmPlaylistButton {
+  background: transparent;
+  color: rgb(0, 0, 0);
+  padding: 0.5rem 0.85rem;
+  font-size: 0.85rem;
+  border: 1.5px solid transparent;
+}
+
+.confirmPlaylistButton:hover {
+  background: rgb(12, 122, 0);
+  border-color: greenyellow;
+  cursor: pointer;
+}
+
+.deleteBtn:hover {
+  background: rgba(229, 62, 62, 0.08);
+  border-color: rgba(229, 62, 62, 0.2);
+}

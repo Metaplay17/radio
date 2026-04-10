@@ -1,5 +1,7 @@
 package org.example.controllers.responses;
 
+import org.example.security.Privileges;
+
 import lombok.AllArgsConstructor;
 import lombok.Data;
 
@@ -7,4 +9,5 @@ import lombok.Data;
 @AllArgsConstructor
 public class LoginResponse {
     private String token;
+    private Privileges privilege;
 }

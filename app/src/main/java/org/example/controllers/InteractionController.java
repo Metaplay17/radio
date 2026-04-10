@@ -7,6 +7,7 @@ import java.time.ZoneId;
 import org.example.aspects.CheckRole;
 import org.example.controllers.requests.CreateInteractionRequest;
 import org.example.controllers.responses.InteractionAnalyticResponse;
+import org.example.controllers.responses.OkResponse;
 import org.example.controllers.responses.RaoReportResponse;
 import org.example.services.InteractionService;
 import org.springframework.http.ResponseEntity;
@@ -28,9 +29,9 @@ public class InteractionController {
 
     @PostMapping("/api/interactions")
     @CheckRole(roles = {"ROLE_ANALYST"})
-    public ResponseEntity<String> createInteraction(@RequestBody @Valid CreateInteractionRequest request) {
+    public ResponseEntity<OkResponse> createInteraction(@RequestBody @Valid CreateInteractionRequest request) {
         interactionService.addInteraction(request);
-        return ResponseEntity.status(201).body("Взаимодействия успешно добавлены");
+        return ResponseEntity.status(201).body(new OkResponse("Взаимодействия успешно добавлены"));
     }
 
     @GetMapping("/api/interactions")

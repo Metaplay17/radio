@@ -30,10 +30,6 @@ public class Licence {
     @Column(name = "duration", nullable = true)
     private int duration;
 
-    public LicenceDto toDto() {
-        return new LicenceDto(id ,track.getId(), registered, duration);
-    }
-
     @ManyToOne
     @JoinColumn(name = "track_id")
     private Track track;
@@ -42,6 +38,10 @@ public class Licence {
         this.track = track;
         this.registered = registered;
         this.duration = duration;
+    }
+
+    public LicenceDto toDto() {
+        return new LicenceDto(id, track.toDto(), registered, duration);
     }
 }
 

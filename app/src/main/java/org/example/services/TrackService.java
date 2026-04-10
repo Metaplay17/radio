@@ -1,10 +1,15 @@
 package org.example.services;
 
+import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
+
 import org.example.aspects.NotNullArg;
 import org.example.controllers.requests.track.CreateTrackRequest;
 import org.example.entities.Artist;
 import org.example.entities.Genre;
 import org.example.entities.Track;
+import org.example.entities.dto.TrackDto;
 import org.example.exceptions.ConflictException;
 import org.example.repositories.ArtistRepository;
 import org.example.repositories.GenreRepository;
@@ -39,5 +44,15 @@ public class TrackService {
 
         Track track = new Track(title, genre, artist, duration);
         trackRepository.save(track);
+    }
+
+    public List<TrackDto> getTracks(String titlePattern, List<String> artistNames, Long lastId) {
+        titlePattern = titlePattern == null ? "%%" : "%" + titlePattern + "%";
+        List<Integer> artistIds = new ArrayList<Integer>();
+        if (artistNames != null) {
+            artistIds = artistRepository.findIdsByName(artistNames);
+            return trackRepository.findByTitlePatternAndArtist(titlePattern, artistIds, lastId).stream().map((Track t) -> t.toDto()).collect(Collectors.toList());
+        }
+        return trackRepository.findByTitlePattern(titlePattern, lastId).stream().map((Track t) -> t.toDto()).collect(Collectors.toList());
     }
 }

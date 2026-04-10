@@ -1,7 +1,6 @@
 package org.example.services;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,10 +12,12 @@ import org.example.aspects.NotNullArg;
 import org.example.controllers.requests.playlist.ConfirmPlaylistRequest;
 import org.example.controllers.requests.playlist.FormPlaylistRequest;
 import org.example.controllers.requests.track.TrackSignature;
+import org.example.controllers.responses.PlaylistInfoResponse;
 import org.example.controllers.responses.TrackScoreDto;
 import org.example.entities.Playlist;
 import org.example.entities.Track;
 import org.example.entities.User;
+import org.example.entities.dto.PlaylistDto;
 import org.example.exceptions.LicenceExpiredException;
 import org.example.exceptions.NotFoundException;
 import org.example.exceptions.RotationOverusedException;
@@ -93,9 +94,9 @@ public class PlaylistService {
     @NotNullArg
     public void confirmPlaylist(ConfirmPlaylistRequest request, String creatorUsername) {
         User creator = userRepository.findByUsername(creatorUsername).orElseThrow(() -> new UserNotFoundException("Пользователя с username = " + creatorUsername + " нет в базе"));
-        Playlist playlist = new Playlist(request.getName(), creator, request.getDescription(), LocalDateTime.now(), 0);
+        Playlist playlist = new Playlist(request.getName(), creator, request.getDescription(), request.getDatetime(), 0);
         Integer duration = 0;
-        LocalDate date = request.getDate();
+        LocalDate date = request.getDatetime().toLocalDate();
         for (TrackSignature trackSignature : request.getTracks()) {
             Track track = trackRepository.findByTitleAndArtistName(trackSignature.getTitle(), trackSignature.getArtistName()).orElseThrow(() -> new NotFoundException("Трека с названием = " + trackSignature.getTitle() + " и исполнителем = " + trackSignature.getArtistName() + " нет в базе"));
             if (!isLicenceTrackAvailable(track, date)) {
@@ -113,5 +114,14 @@ public class PlaylistService {
 
     private boolean isLicenceTrackAvailable(Track track, LocalDate date) {
         return licenceRepository.checkLicenceByTrackId(track.getId(), date);
+    }
+
+    public List<PlaylistDto> getPlaylists(LocalDate date, Long lastId) {
+        return playlistRepository.findAllByDate(date, lastId).stream().map((Playlist p) -> p.toDto()).toList();
+    }
+
+    public PlaylistInfoResponse getPlaylistInfo(Integer id) {
+        Playlist playlist = playlistRepository.findById(id).orElseThrow(() -> new NotFoundException("Плейлиста с id = " + id + " нет в базе"));
+        return new PlaylistInfoResponse(playlist.getId(), playlist.getName(), playlist.getDescription(), playlist.getDuration(), playlist.getDatetime(), playlist.getTracks().stream().map((Track t) -> t.toDto()).toList());
     }
 }

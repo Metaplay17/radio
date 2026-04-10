@@ -2,6 +2,7 @@ package org.example.controllers;
 
 import org.example.aspects.CheckRole;
 import org.example.controllers.requests.CreateArtistRequest;
+import org.example.controllers.responses.OkResponse;
 import org.example.services.ArtistService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,9 +21,9 @@ public class ArtistController {
 
     @PostMapping("/api/artists")
     @CheckRole(roles = {"ROLE_CONTENT_MANAGER"})
-    public ResponseEntity<String> createArtist(@RequestBody @Valid CreateArtistRequest request) {
+    public ResponseEntity<OkResponse> createArtist(@RequestBody @Valid CreateArtistRequest request) {
         artistService.addArtist(request);
-        return ResponseEntity.status(201).body("Исполнитель успешно добавлен");
+        return ResponseEntity.status(201).body(new OkResponse("Исполнитель успешно добавлен"));
     }
 }
 

@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class LicenceDto {
     private long id;
-    private long trackId;
+    private TrackDto track;
     private LocalDate registered;
     private Integer duration;
 }

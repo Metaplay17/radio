@@ -13,6 +13,7 @@ import org.slf4j.Logger;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.validation.ObjectError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.MissingServletRequestParameterException;
@@ -38,7 +39,7 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(HttpMessageNotReadableException.class)
     public ResponseEntity<ErrorResponse> handleMethodArgumentNotValidException(HttpMessageNotReadableException e) {
-        return ResponseEntity.status(400).body(new ErrorResponse(HttpStatus.BAD_REQUEST, "Проверьте правильность заполнения полей"));
+        return ResponseEntity.status(400).body(new ErrorResponse(HttpStatus.BAD_REQUEST, "Проверьте правильность заполнения полей и все ли заполнены"));
     }
 
     @ExceptionHandler(MissingServletRequestParameterException.class)
@@ -49,6 +50,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
         return ResponseEntity.status(403).body(new ErrorResponse(HttpStatus.FORBIDDEN, e.getMessage()));
+    }
+
+    @ExceptionHandler(BadCredentialsException.class)
+    public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e) {
+        return ResponseEntity.status(403).body(new ErrorResponse(HttpStatus.FORBIDDEN, "Проверьте данные для входа"));
     }
 
     @ExceptionHandler(RotationOverusedException.class)

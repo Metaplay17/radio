@@ -1,6 +1,6 @@
 package org.example.controllers.requests.playlist;
 
-import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.List;
 
 import org.example.controllers.requests.track.TrackSignature;
@@ -21,5 +21,5 @@ public class ConfirmPlaylistRequest {
     private List<TrackSignature> tracks;
 
     @FutureOrPresent
-    private LocalDate date;
+    private LocalDateTime datetime;
 }

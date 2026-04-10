@@ -1,0 +1,287 @@
+:root {
+  --ph-primary: #4a90e2;
+  --ph-primary-hover: #357abd;
+  --ph-danger: #e53e3e;
+  --ph-bg: #f8fafc;
+  --ph-card-bg: #ffffff;
+  --ph-border: #e2e8f0;
+  --ph-text: #0f172a;
+  --ph-text-secondary: #64748b;
+  --ph-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --ph-radius: 10px;
+  --ph-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page {
+  min-height: 100vh;
+  background-color: var(--ph-bg);
+  color: var(--ph-text);
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  background: var(--ph-card-bg);
+  border-bottom: 1px solid var(--ph-border);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.mainTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.userBlock {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.username {
+  font-weight: 500;
+  color: var(--ph-text-secondary);
+}
+
+.logoutBtn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1.5px solid var(--ph-border);
+  border-radius: 6px;
+  color: var(--ph-text-secondary);
+  cursor: pointer;
+  transition: var(--ph-transition);
+  font-weight: 500;
+}
+
+.logoutBtn:hover {
+  border-color: var(--ph-danger);
+  color: var(--ph-danger);
+  background: rgba(229, 62, 62, 0.05);
+}
+
+/* Main Content */
+.content {
+  padding: 2rem;
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Filter Bar */
+.filterBar {
+  display: flex;
+  align-items: flex-end;
+  gap: 1rem;
+  margin-bottom: 1.5rem;
+  flex-wrap: wrap;
+}
+
+.filterGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.filterLabel {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--ph-text-secondary);
+}
+
+.dateInput {
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid var(--ph-border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: #fafbfc;
+  color: var(--ph-text);
+  transition: var(--ph-transition);
+}
+
+.dateInput:focus {
+  outline: none;
+  border-color: var(--ph-primary);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+  background: #fff;
+}
+
+.searchBtn {
+  padding: 0.65rem 1.5rem;
+  background: var(--ph-primary);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ph-transition);
+  height: fit-content;
+}
+
+.searchBtn:hover {
+  background: var(--ph-primary-hover);
+  transform: translateY(-1px);
+}
+
+.backBtn {
+  padding: 0.65rem 1.5rem;
+  background: red;
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--ph-transition);
+  height: fit-content;
+}
+
+.backBtn:hover {
+  background: rgb(119, 1, 1);
+  transform: translateY(-1px);
+}
+
+/* Playlist List */
+.playlistGrid {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.playlistItem {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1rem 1.25rem;
+  background: var(--ph-card-bg);
+  border: 1px solid var(--ph-border);
+  border-radius: var(--ph-radius);
+  cursor: pointer;
+  transition: var(--ph-transition);
+  width: 100%;
+  text-align: left;
+}
+
+.playlistItem:hover {
+  border-color: var(--ph-primary);
+  box-shadow: var(--ph-shadow);
+  transform: translateX(2px);
+}
+
+.playlistItem:focus-visible {
+  outline: 2px solid var(--ph-primary);
+  outline-offset: 2px;
+}
+
+.itemInfo {
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+
+.itemTitle {
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--ph-text);
+}
+
+.itemDate {
+  font-size: 0.85rem;
+  color: var(--ph-text-secondary);
+}
+
+.itemDuration {
+  font-size: 0.9rem;
+  color: var(--ph-text-secondary);
+  background: #f1f5f9;
+  padding: 0.3rem 0.6rem;
+  border-radius: 6px;
+  font-variant-numeric: tabular-nums;
+  white-space: nowrap;
+}
+
+/* Empty State */
+.emptyState {
+  text-align: center;
+  padding: 3rem 1rem;
+  color: var(--ph-text-secondary);
+  background: var(--ph-card-bg);
+  border: 1px dashed var(--ph-border);
+  border-radius: var(--ph-radius);
+}
+
+.clearFilterBtn {
+  margin-top: 0.75rem;
+  background: transparent;
+  border: 1px solid var(--ph-border);
+  color: var(--ph-primary);
+  padding: 0.4rem 0.8rem;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: var(--ph-transition);
+}
+
+.clearFilterBtn:hover {
+  background: rgba(74, 144, 226, 0.05);
+  border-color: var(--ph-primary);
+}
+
+/* Pagination */
+.pagination {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.5rem;
+  margin-top: 2rem;
+  flex-wrap: wrap;
+}
+
+.pageBtn {
+  min-width: 2.25rem;
+  height: 2.25rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0 0.5rem;
+  border: 1.5px solid var(--ph-border);
+  border-radius: 6px;
+  background: var(--ph-card-bg);
+  color: var(--ph-text);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--ph-transition);
+}
+
+.pageBtn:hover:not(:disabled) {
+  border-color: var(--ph-primary);
+  color: var(--ph-primary);
+}
+
+.pageBtn.active {
+  background: var(--ph-primary);
+  border-color: var(--ph-primary);
+  color: #fff;
+  cursor: default;
+}
+
+.pageBtn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+/* Адаптив */
+@media (max-width: 640px) {
+  .content { padding: 1.25rem; }
+  .filterBar { flex-direction: column; align-items: stretch; }
+  .searchBtn { width: 100%; }
+  .playlistItem { padding: 0.85rem 1rem; }
+  .itemDuration { font-size: 0.8rem; padding: 0.25rem 0.45rem; }
+}

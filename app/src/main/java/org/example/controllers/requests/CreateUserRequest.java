@@ -18,14 +18,15 @@ public class CreateUserRequest {
     private String username;
 
     @Email(message = "Поле email не соответствует адресу эхлектронной почты")
+    @NotBlank(message = "Поле email не может быть пустым")
     private String email;
 
     @NotNull(message = "Поле privilegeLevel не может быть пустым")
-    @Min(1)
-    @Max(10)
-    private int privilegeLevel;
+    @Min(value = 1, message = "Поле privilegeLevel не может быть меньше 1")
+    @Max(value = 100, message = "Поле privilegeLevel не может быть больше 100")
+    private Integer privilegeLevel;
 
     @NotBlank(message = "Поле password не может быть пустым")
-    @Size(min = 8)
+    @Size(min = 8, message = "Длина password не может быть меньше 8 символов")
     private String password;
 }

@@ -2,6 +2,7 @@ package org.example.controllers;
 
 import org.example.aspects.CheckRole;
 import org.example.controllers.requests.CreateAudioFeatureTypeRequest;
+import org.example.controllers.responses.OkResponse;
 import org.example.services.AudioFeatureTypeService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +21,8 @@ public class AudioFeatureTypeController {
 
     @PostMapping("/api/audio-feature-types")
     @CheckRole(roles = {"ROLE_CONTENT_MANAGER"})
-    public ResponseEntity<String> createAudioFeatureType(@RequestBody @Valid CreateAudioFeatureTypeRequest request) {
+    public ResponseEntity<OkResponse> createAudioFeatureType(@RequestBody @Valid CreateAudioFeatureTypeRequest request) {
         audioFeatureTypeService.addAudioFeatureType(request);
-        return ResponseEntity.status(201).body("Тип признака успешно добавлен");
+        return ResponseEntity.status(201).body(new OkResponse("Тип признака успешно добавлен"));
     }
 }

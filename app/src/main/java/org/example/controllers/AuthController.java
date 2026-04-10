@@ -2,6 +2,7 @@ package org.example.controllers;
 
 import org.example.controllers.requests.LoginRequest;
 import org.example.controllers.responses.LoginResponse;
+import org.example.entities.User;
 import org.example.security.JwtService;
 import org.example.services.LoggingService;
 import org.example.services.UserService;
@@ -34,8 +35,9 @@ public class AuthController {
         UsernamePasswordAuthenticationToken token = new UsernamePasswordAuthenticationToken(request.getUsername(), request.getPassword());
         authenticationManager.authenticate(token);
 
-        String jwtToken = jwtService.generateToken(userService.getUserByUsername(request.getUsername()));
+        User user = userService.getUserByUsername(request.getUsername());
+        String jwtToken = jwtService.generateToken(user);
         loggingService.info("Пользователь " + request.getUsername() + " авторизовался", request.getUsername());
-        return ResponseEntity.ok(new LoginResponse(jwtToken));
+        return ResponseEntity.ok(new LoginResponse(jwtToken, user.getStringPrivilegeLevel()));
     }
 }

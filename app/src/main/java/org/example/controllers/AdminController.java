@@ -2,6 +2,7 @@ package org.example.controllers;
 
 import org.example.aspects.CheckRole;
 import org.example.controllers.requests.CreateUserRequest;
+import org.example.controllers.responses.OkResponse;
 import org.example.services.UserService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,8 +21,8 @@ public class AdminController {
 
     @PostMapping("/api/admin/users")
     @CheckRole(roles = {"ROLE_ADMIN", "ROLE_SYSTEM"})
-    public ResponseEntity<String> createUser(@RequestBody @Valid CreateUserRequest request) {
+    public ResponseEntity<OkResponse> createUser(@RequestBody @Valid CreateUserRequest request) {
         userService.createUser(request);
-        return ResponseEntity.status(201).body("Пользователь создан");
+        return ResponseEntity.status(201).body(new OkResponse("Пользователь создан"));
     }
 }
