@@ -20,6 +20,6 @@ public interface ArtistRepository extends JpaRepository<Artist, Integer> {
 
     @NativeQuery("SELECT * " + 
     "FROM artists AS a " + 
-    "WHERE a.name LIKE %:namePattern%")
-    List<Artist> findByNameLike(@Param("namePattern") String namePattern);
+    "WHERE a.name LIKE %:namePattern% AND a.id > :lastId")
+    List<Artist> findByNameLike(@Param("namePattern") String namePattern, @Param("lastId") Long lastId);
 }

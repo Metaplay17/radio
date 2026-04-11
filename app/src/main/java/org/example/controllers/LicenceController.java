@@ -24,22 +24,22 @@ public class LicenceController {
         this.licenceService = licenceService;
     }
 
-    @PostMapping("/api/licences")
-    @CheckRole(roles = {"ROLE_LICENCE_MANAGER"})
+    @PostMapping("/api/licenses")
+    @CheckRole(roles = {"ROLE_LICENSE_MANAGER"})
     public ResponseEntity<OkResponse> createLicence(@RequestBody CreateLicenceRequest request) {
         licenceService.addLicence(request);
         return ResponseEntity.status(201).body(new OkResponse("Лицензия успешно добавлена"));
     }
 
-    @DeleteMapping("/api/licences")
-    @CheckRole(roles = {"ROLE_LICENCE_MANAGER"})
+    @DeleteMapping("/api/licenses")
+    @CheckRole(roles = {"ROLE_LICENSE_MANAGER"})
     public ResponseEntity<OkResponse> removeLicence(@RequestBody RemoveLicenceRequest request) {
         licenceService.removeLicence(request);
         return ResponseEntity.status(200).body(new OkResponse("Лицензия отозвана с завтрашнего дня"));
     }
 
-    @GetMapping("/api/licences")
-    @CheckRole(roles = {"ROLE_LICENCE_MANAGER"})
+    @GetMapping("/api/licenses")
+    @CheckRole(roles = {"ROLE_LICENSE_MANAGER"})
     public ResponseEntity<List<LicenceDto>> getLicences(@RequestParam(name = "type", required = true) String type, 
         @RequestParam(name = "trackTitle", required = false) String trackTitle, @RequestParam(name = "artistName", required = false) String artistName,
          @RequestParam(name = "lastId", required = true) Long lastId) {

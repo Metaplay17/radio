@@ -6,6 +6,8 @@ import { PlaylistHistoryPage } from './RedactorPage/PlaylistHistory.tsx'
 import { TrackDatabasePage } from './TrackComponent/TrackPage.tsx'
 import { ContentManagerPage } from './ContentManagerPage/ContentManager.tsx'
 import { GenreDatabasePage } from './GenreComponent/GenrePage.tsx'
+import { ArtistDatabasePage } from './ArtistComponent/ArtistPage.tsx'
+import { LicensorPage } from './LicenceManagerPage/LicenseManagerPage.tsx'
 
 function App() {
 
@@ -18,6 +20,8 @@ function App() {
             <Route path="/redactor/playlist-history" element={<PlaylistHistoryPage />} />
             <Route path="/tracks" element={<TrackDatabasePage />} />
             <Route path="/genres" element={<GenreDatabasePage />} />
+            <Route path="/artists" element={<ArtistDatabasePage />} />
+            <Route path="/license-manager" element={<LicensorPage />} />
         </Routes>
       </BrowserRouter>
   )

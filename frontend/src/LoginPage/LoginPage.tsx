@@ -40,8 +40,8 @@ const Login = () => {
                 case 'ROLE_CONTENT_MANAGER':
                     navigate('/content-manager');
                     break;
-                case 'ROLE_LICENCE_MANAGER':
-                    navigate('/licence-manager');
+                case 'ROLE_LICENSE_MANAGER':
+                    navigate('/license-manager');
                     break;
                 case 'ROLE_ADMIN':
                     navigate('/admin');

@@ -56,7 +56,7 @@ public class User {
             return Privileges.ROLE_ANALYST;
         }
         else if (privilegeLevel == 10) {
-            return Privileges.ROLE_LICENCE_MANAGER;
+            return Privileges.ROLE_LICENSE_MANAGER;
         }
         else if (privilegeLevel == 25) {
             return Privileges.ROLE_CONTENT_MANAGER;

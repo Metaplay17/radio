@@ -30,11 +30,7 @@ public class ArtistService {
         artistRepository.save(artist);
     }
 
-    public List<ArtistDto> getArtistByNamePattern(String namePattern) throws MissingServletRequestParameterException {
-        if (namePattern == null || namePattern.isEmpty()) {
-            throw new MissingServletRequestParameterException("Поисковый запрос по имени исполнителя", "String");
-        }
-
-        return artistRepository.findByNameLike(namePattern).stream().map((Artist a) -> a.toDto()).toList();
+    public List<ArtistDto> getArtistByNamePattern(String namePattern, Long lastId) throws MissingServletRequestParameterException {
+        return artistRepository.findByNameLike(namePattern, lastId).stream().map((Artist a) -> a.toDto()).toList();
     }
 }

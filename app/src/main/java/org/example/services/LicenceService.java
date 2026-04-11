@@ -48,7 +48,7 @@ public class LicenceService {
 
     public List<LicenceDto> getLicences(String trackTitle, String artistName, String type, Long lastId) {
         Long trackId = null;
-        if (trackTitle != null && artistName != null) {
+        if (trackTitle != null && artistName != null && !trackTitle.isEmpty() && !artistName.isEmpty()) {
             trackId = trackRepository.findByTitleAndArtistName(trackTitle, artistName).orElseThrow(() -> new NotFoundException("Трека с названием = " + trackTitle + " нет в базе")).getId();
         }
         if (type.equals("ALL")) {

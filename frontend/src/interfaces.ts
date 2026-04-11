@@ -55,3 +55,10 @@ export interface GenreDto {
     id: number,
     name: string
 }
+
+export interface LicenseDto {
+    id: number,
+    track: TrackDto,
+    registered: string,
+    duration: number
+}
