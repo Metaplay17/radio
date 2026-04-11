@@ -18,15 +18,21 @@ export function PlaylistHistoryPage() {
 
   // Состояние фильтра и пагинации
   const [filterDate, setFilterDate] = useState('');
-  const [lastId, setLastId] = useState(0);
+  const [lastDatetime, setLastDatetime] = useState<Date>(new Date(Date.now()));
   const [playlists, setPlaylists] = useState<PlaylistDto[]>([]);
   const [nextPlaylists, setNextPlaylists] = useState<PlaylistDto[]>([]);
+  const [prevPlaylists, setPrevPlaylists] = useState<PlaylistDto[]>([]);
 
   const fetchPlaylists = async () => {
-    const playlistsCurrent : PlaylistDto[] = await makeSafeAuthGet(`/api/playlists?lastId=${lastId}&date=${filterDate}`, navigate);
+    if (lastDatetime.getDate() != new Date(Date.now()).getDate()) {
+      const playlistsPrev : PlaylistDto[] = await makeSafeAuthGet(`/api/playlists?lastDatetime=${playlists[0].datetime.getMilliseconds()}&date=${filterDate}&isNext=false`, navigate);
+      setPrevPlaylists(playlistsPrev);
+    }
+    const playlistsCurrent : PlaylistDto[] = await makeSafeAuthGet(`/api/playlists?lastDatetime=${lastDatetime.getMilliseconds()}&date=${filterDate}&isNext=true`, navigate);
     setSelectedPlaylistId(playlistsCurrent[0].id);
     setPlaylists(playlistsCurrent);
-    const playlistsNext : PlaylistDto[] = await makeSafeAuthGet(`/api/playlists?lastId=${lastId + 10}&date=${filterDate}`, navigate);
+    setLastDatetime(playlistsCurrent[playlistsCurrent.length - 1].datetime);
+    const playlistsNext : PlaylistDto[] = await makeSafeAuthGet(`/api/playlists?lastDatetime=${playlistsCurrent[playlistsCurrent.length - 1].datetime.getMilliseconds()}&date=${filterDate}&isNext=true`, navigate);
     setNextPlaylists(playlistsNext);
   }
 
@@ -36,7 +42,7 @@ export function PlaylistHistoryPage() {
 
 useEffect(() => {
     fetchPlaylists();
-  }, [lastId]);
+  }, [lastDatetime]);
 
   // Обработчики
   const handleFilterChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
@@ -44,11 +50,11 @@ useEffect(() => {
   }, []);
 
   const handlePageNext = () => {
-    setLastId(prev => prev + 10);
+    setLastDatetime(playlists[playlists.length - 1].datetime);
   };
 
   const handlePagePrev = () => {
-    setLastId(prev => prev - 10);
+    setLastDatetime(playlists[0].datetime);
   };
 
   const handlePlaylistClick = useCallback((id: number) => {
@@ -144,7 +150,7 @@ useEffect(() => {
             <nav className={styles.pagination} aria-label="Навигация по страницам">
               <button
                 onClick={() => handlePagePrev()}
-                disabled={lastId === 0}
+                disabled={prevPlaylists.length == 0}
                 className={styles.pageBtn}
                 aria-label="Предыдущая страница"
               >

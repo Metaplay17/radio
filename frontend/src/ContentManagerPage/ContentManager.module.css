@@ -1,0 +1,234 @@
+:root {
+  --cm-primary: #4a90e2;
+  --cm-primary-hover: #357abd;
+  --cm-danger: #e53e3e;
+  --cm-success: #10b981;
+  --cm-bg: #f8fafc;
+  --cm-card-bg: #ffffff;
+  --cm-border: #e2e8f0;
+  --cm-text: #0f172a;
+  --cm-text-secondary: #64748b;
+  --cm-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+  --cm-radius: 10px;
+  --cm-transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.page {
+  min-height: 100vh;
+  background-color: var(--cm-bg);
+  color: var(--cm-text);
+  display: flex;
+  flex-direction: column;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+/* Header */
+.header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 1.25rem 2rem;
+  background: var(--cm-card-bg);
+  border-bottom: 1px solid var(--cm-border);
+  flex-wrap: wrap;
+  gap: 1rem;
+}
+
+.mainTitle {
+  font-size: 1.5rem;
+  font-weight: 700;
+  margin: 0;
+}
+
+.userBlock {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+}
+
+.username {
+  font-weight: 500;
+  color: var(--cm-text-secondary);
+}
+
+.logoutBtn {
+  padding: 0.5rem 1rem;
+  background: transparent;
+  border: 1.5px solid var(--cm-border);
+  border-radius: 6px;
+  color: var(--cm-text-secondary);
+  cursor: pointer;
+  transition: var(--cm-transition);
+  font-weight: 500;
+}
+
+.logoutBtn:hover {
+  border-color: var(--cm-danger);
+  color: var(--cm-danger);
+  background: rgba(229, 62, 62, 0.05);
+}
+
+/* Navigation */
+.navButtons {
+  display: flex;
+  gap: 0.75rem;
+  padding: 1rem 2rem;
+  flex-wrap: wrap;
+  background: var(--cm-card-bg);
+  border-bottom: 1px solid var(--cm-border);
+}
+
+.navBtn {
+  padding: 0.65rem 1.25rem;
+  background: var(--cm-card-bg);
+  border: 1.5px solid var(--cm-border);
+  border-radius: 8px;
+  color: var(--cm-text);
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--cm-transition);
+}
+
+.navBtn:hover {
+  border-color: var(--cm-primary);
+  color: var(--cm-primary);
+  box-shadow: var(--cm-shadow);
+}
+
+/* Main Content */
+.content {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 1.5rem;
+  padding: 2rem;
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+@media (max-width: 768px) {
+  .content {
+    grid-template-columns: 1fr;
+    padding: 1.25rem;
+  }
+}
+
+/* Cards */
+.card {
+  background: var(--cm-card-bg);
+  border-radius: var(--cm-radius);
+  box-shadow: var(--cm-shadow);
+  padding: 1.5rem;
+  border: 1px solid var(--cm-border);
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.cardTitle {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin: 0;
+  color: var(--cm-text);
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid var(--cm-border);
+}
+
+/* Forms */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.formGroup {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+}
+
+.label {
+  font-size: 0.85rem;
+  font-weight: 500;
+  color: var(--cm-text-secondary);
+}
+
+.input {
+  padding: 0.65rem 0.85rem;
+  border: 1.5px solid var(--cm-border);
+  border-radius: 6px;
+  font-size: 0.95rem;
+  background: #fafbfc;
+  color: var(--cm-text);
+  transition: var(--cm-transition);
+  font-family: inherit;
+}
+
+.input::placeholder {
+  color: #94a3b8;
+}
+
+.input:focus {
+  outline: none;
+  border-color: var(--cm-primary);
+  box-shadow: 0 0 0 3px rgba(74, 144, 226, 0.15);
+  background: #fff;
+}
+
+/* Buttons */
+.primaryBtn {
+  padding: 0.75rem;
+  background: var(--cm-primary);
+  color: #fff;
+  border: none;
+  border-radius: 6px;
+  font-weight: 600;
+  font-size: 0.95rem;
+  cursor: pointer;
+  transition: var(--cm-transition);
+  font-family: inherit;
+}
+
+.primaryBtn:hover:not(:disabled) {
+  background: var(--cm-primary-hover);
+  transform: translateY(-1px);
+}
+
+.primaryBtn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Messages */
+.message {
+  font-size: 0.85rem;
+  padding: 0.4rem 0.75rem;
+  border-radius: 6px;
+  text-align: center;
+  animation: fadeIn 0.2s ease-out;
+}
+
+.success {
+  background: rgba(16, 185, 129, 0.1);
+  color: var(--cm-success);
+  border: 1px solid rgba(16, 185, 129, 0.3);
+}
+
+.error {
+  background: rgba(229, 62, 62, 0.1);
+  color: var(--cm-danger);
+  border: 1px solid rgba(229, 62, 62, 0.3);
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(-4px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+/* Datalist styling hint */
+input[list]::-webkit-calendar-picker-indicator {
+  display: none;
+}

@@ -9,7 +9,7 @@ export function RedactorPage() {
   const navigate = useNavigate();
 
   if (localStorage.getItem('privilege') !== 'ROLE_REDACTOR') {
-    navigate('/login');
+    window.location.href = '/login';
   }
   const username = localStorage.getItem("username");
 
@@ -45,7 +45,7 @@ export function RedactorPage() {
             duration: Number(filters.duration),
             daytime: filters.timeOfDay.toUpperCase(),
             date: filters.date,
-            weekday: new Date(filters.date).getDay(),
+            weekday: new Date(filters.date).getDay() + 1,
             anchorTrack: filters.anchorTrack == "" ? null : filters.anchorTrack
         });
         setTracks([...(json.tracks || [])]);
@@ -101,7 +101,7 @@ export function RedactorPage() {
         title: `Трек ${tracks.length + 1}`,
         artistName: 'Исполнитель 1',
         duration: Math.floor(Math.random() * 180) + 150,
-        genre: 'Жанр 1'
+        genreName: 'Жанр 1'
       },
       score: 100
     };
@@ -137,7 +137,7 @@ export function RedactorPage() {
       {/* Навигация */}
       <nav className={styles.navButtons}>
         <button className={styles.navBtn} onClick={() => navigate("/redactor/playlist-history")}>История плейлистов</button>
-        <button className={styles.navBtn}>Обзор треков</button>
+        <button className={styles.navBtn} onClick={() => navigate("/tracks")}>Обзор треков</button>
       </nav>
 
       {/* Основной контент */}

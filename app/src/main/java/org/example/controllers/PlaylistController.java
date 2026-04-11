@@ -1,6 +1,9 @@
 package org.example.controllers;
 
+import java.time.Instant;
 import java.time.LocalDate;
+import java.time.LocalDateTime;
+import java.time.ZoneId;
 import java.util.List;
 
 import org.example.aspects.CheckRole;
@@ -50,8 +53,9 @@ public class PlaylistController {
 
     @GetMapping("/api/playlists")
     @CheckRole(roles = {"ROLE_REDACTOR"})
-    public ResponseEntity<List<PlaylistDto>> getPlaylists(@RequestParam(name = "date", required = false) LocalDate date, @RequestParam(name = "lastId", required = true) Long lastId) {
-        return ResponseEntity.ok().body(playlistService.getPlaylists(date, lastId));
+    public ResponseEntity<List<PlaylistDto>> getPlaylists(@RequestParam(name = "date", required = false) LocalDate date, 
+    @RequestParam(name = "lastDatetime", required = true) Long lastDatetimeMsec, @RequestParam(name = "isNext", required = true) Boolean isNext) {
+        return ResponseEntity.ok().body(playlistService.getPlaylists(date, LocalDateTime.ofInstant(Instant.ofEpochMilli(lastDatetimeMsec), ZoneId.systemDefault()), isNext));
     }
 
     @GetMapping("/api/playlists/{id}")

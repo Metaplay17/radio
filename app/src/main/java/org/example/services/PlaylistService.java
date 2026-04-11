@@ -1,6 +1,7 @@
 package org.example.services;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -52,6 +53,7 @@ public class PlaylistService {
         LocalDate date = request.getDate();
         List<Track> tracks = trackRepository.findAllWithActiveLicense(date);
         tracks = rotationService.getAvailableTracks(tracks);
+        System.out.println(tracks.size());
 
         Map<Double, Track> trackScores = new HashMap<Double, Track>();
         PriorityQueue<Double> queue = new PriorityQueue<Double>();
@@ -116,8 +118,11 @@ public class PlaylistService {
         return licenceRepository.checkLicenceByTrackId(track.getId(), date);
     }
 
-    public List<PlaylistDto> getPlaylists(LocalDate date, Long lastId) {
-        return playlistRepository.findAllByDate(date, lastId).stream().map((Playlist p) -> p.toDto()).toList();
+    public List<PlaylistDto> getPlaylists(LocalDate date, LocalDateTime lastDatetime, Boolean isNext) {
+        if (isNext) {
+            return playlistRepository.findNextByDate(date, lastDatetime).stream().map((Playlist p) -> p.toDto()).toList();
+        }
+        return playlistRepository.findPrevByDate(date, lastDatetime).stream().map((Playlist p) -> p.toDto()).toList();
     }
 
     public PlaylistInfoResponse getPlaylistInfo(Integer id) {

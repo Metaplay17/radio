@@ -49,17 +49,17 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErrorResponse> handleAccessDeniedException(AccessDeniedException e) {
-        return ResponseEntity.status(403).body(new ErrorResponse(HttpStatus.FORBIDDEN, e.getMessage()));
+        return ResponseEntity.status(401).body(new ErrorResponse(HttpStatus.UNAUTHORIZED, e.getMessage()));
     }
 
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e) {
-        return ResponseEntity.status(403).body(new ErrorResponse(HttpStatus.FORBIDDEN, "Проверьте данные для входа"));
+        return ResponseEntity.status(401).body(new ErrorResponse(HttpStatus.UNAUTHORIZED, "Проверьте данные для входа"));
     }
 
     @ExceptionHandler(RotationOverusedException.class)
     public ResponseEntity<ErrorResponse> handleRotationOverusedException(RotationOverusedException e) {
-        return ResponseEntity.status(403).body(new ErrorResponse(HttpStatus.FORBIDDEN, e.getMessage()));
+        return ResponseEntity.status(409).body(new ErrorResponse(HttpStatus.CONFLICT, e.getMessage()));
     }
 
     @ExceptionHandler(UserNotFoundException.class)

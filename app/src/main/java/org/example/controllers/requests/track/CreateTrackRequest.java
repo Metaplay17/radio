@@ -11,12 +11,12 @@ public class CreateTrackRequest {
     @NotBlank(message = "Название не может быть null или пустой строкой")
     private String title;
 
-    @Positive(message = "Идентификатор жанра должен быть положительным числом")
-    private int genreId;
+    @NotBlank(message = "Жанр должен быть задан")
+    private String genre;
 
-    @Positive(message = "Идентификатор исполнителя должен быть положительным числом")
-    private int artistId;
+    @NotBlank(message = "Исполнитель должен быть задан")
+    private String artist;
 
     @Positive(message = "Длительность должна быть положительным числом")
-    private int duration;
+    private Integer duration;
 }

@@ -1,6 +1,6 @@
 package org.example.services;
 
-import java.util.ArrayList;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -8,9 +8,11 @@ import org.example.aspects.NotNullArg;
 import org.example.controllers.requests.track.CreateTrackRequest;
 import org.example.entities.Artist;
 import org.example.entities.Genre;
+import org.example.entities.Licence;
 import org.example.entities.Track;
 import org.example.entities.dto.TrackDto;
 import org.example.exceptions.ConflictException;
+import org.example.exceptions.NotFoundException;
 import org.example.repositories.ArtistRepository;
 import org.example.repositories.GenreRepository;
 import org.example.repositories.TrackRepository;
@@ -30,13 +32,13 @@ public class TrackService {
 
     @NotNullArg
     public void addTrack(CreateTrackRequest request) {
-        int artistId = request.getArtistId();
-        int genreId = request.getGenreId();
+        String artistName = request.getArtist();
+        String genreName = request.getGenre();
         String title = request.getTitle();
         int duration = request.getDuration();
 
-        Artist artist = artistRepository.findById(artistId).orElseThrow(() -> new ConflictException("Исполнителя с id = " + artistId + " нет в базе"));
-        Genre genre = genreRepository.findById(genreId).orElseThrow(() -> new ConflictException("Жанра с id = " + genreId + " нет в базе"));
+        Artist artist = artistRepository.findByName(artistName).orElseThrow(() -> new ConflictException("Исполнителя с названием = " + artistName + " нет в базе"));
+        Genre genre = genreRepository.findByName(genreName).orElseThrow(() -> new ConflictException("Жанра с названием = " + genreName + " нет в базе"));
 
         if (trackRepository.existsByTitle(title)) {
             throw new ConflictException("Трек с названием = " + title + " уже существует");
@@ -46,13 +48,21 @@ public class TrackService {
         trackRepository.save(track);
     }
 
-    public List<TrackDto> getTracks(String titlePattern, List<String> artistNames, Long lastId) {
+    public List<TrackDto> getTracks(String titlePattern, String artistName, String genre, Long lastId, Boolean isLicensedOnly) {
         titlePattern = titlePattern == null ? "%%" : "%" + titlePattern + "%";
-        List<Integer> artistIds = new ArrayList<Integer>();
-        if (artistNames != null) {
-            artistIds = artistRepository.findIdsByName(artistNames);
-            return trackRepository.findByTitlePatternAndArtist(titlePattern, artistIds, lastId).stream().map((Track t) -> t.toDto()).collect(Collectors.toList());
+        Integer artistId = null;
+        Integer genreId = null;
+        if (artistName != null && !artistName.isEmpty()) {
+            artistId = artistRepository.findByName(artistName).orElseThrow(() -> new NotFoundException("Исполнителя с названием " + artistName + " нет в базе")).getId();
         }
-        return trackRepository.findByTitlePattern(titlePattern, lastId).stream().map((Track t) -> t.toDto()).collect(Collectors.toList());
+        if (genre != null && !genre.isEmpty()) {
+            genreId = genreRepository.findByName(genre).orElseThrow(() -> new NotFoundException("Жанра с названием " + genre + " нет в базе")).getId();
+        }
+        if (isLicensedOnly == true) {
+            return trackRepository.findByTitlePatternAndArtistAndGenre(titlePattern, artistId, genreId, lastId).stream().filter((Track t) -> t.getLicences().stream().anyMatch((Licence l) -> l.getRegistered().plusDays(l.getDuration()).isAfter(LocalDate.now()))).map((Track t) -> t.toDto()).collect(Collectors.toList());
+        }
+        else {
+            return trackRepository.findByTitlePatternAndArtistAndGenre(titlePattern, artistId, genreId, lastId).stream().map((Track t) -> t.toDto()).collect(Collectors.toList());
+        }
     }
 }

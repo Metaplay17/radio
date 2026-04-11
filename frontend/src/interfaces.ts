@@ -13,7 +13,7 @@ export interface TrackDto {
   title: string;
   artistName: string;
   duration: number;
-  genre: string;
+  genreName: string;
 }
 
 export interface TrackScoreDto {
@@ -44,4 +44,14 @@ export interface PlaylistInfo {
     datetime: string,
     duration: number,
     tracks: TrackDto[]
+}
+
+export interface ArtistDto {
+    id: number,
+    name: string
+}
+
+export interface GenreDto {
+    id: number,
+    name: string
 }

@@ -28,16 +28,8 @@ public interface TrackRepository extends JpaRepository<Track, Long> {
     @NativeQuery("SELECT t.* " + 
     "FROM tracks AS t " + 
     "JOIN artists AS a ON t.artist_id = a.id " + 
-    "WHERE t.title LIKE :titlePattern AND t.id > :lastId " +
+    "WHERE t.title LIKE :titlePattern AND (t.genre_id = :genreId OR :genreId IS NULL) AND (a.id = :artistId OR :artistId IS NULL) AND t.id > :lastId " +
     "ORDER BY t.id " +
     "LIMIT 10")
-    List<Track> findByTitlePattern(@Param("titlePattern") String titlePattern, @Param("lastId") Long lastId);
-
-    @NativeQuery("SELECT t.* " + 
-    "FROM tracks AS t " + 
-    "JOIN artists AS a ON t.artist_id = a.id " + 
-    "WHERE t.title LIKE :titlePattern AND a.id IN (:artistIds) AND t.id > :lastId " +
-    "ORDER BY t.id " +
-    "LIMIT 10")
-    List<Track> findByTitlePatternAndArtist(@Param("titlePattern") String titlePattern, @Param("artistIds") List<Integer> artistIds, @Param("lastId") Long lastId);
+    List<Track> findByTitlePatternAndArtistAndGenre(@Param("titlePattern") String titlePattern, @Param("artistId") Integer artistId, @Param("genreId") Integer genreId, @Param("lastId") Long lastId);
 }
