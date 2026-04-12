@@ -35,18 +35,17 @@ export function TrackDatabasePage() {
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>('');
 
-  // Загрузка данных
   const fetchTracks = async (lastId : number, activeLicenseOnly : boolean, genreFilter : string, searchQuery : string, artistFilter : string) => {
     setIsLoading(true);
     try {
       const current = await makeSafeAuthGet(
-        `/api/tracks?lastId=${lastId}&isLicensedOnly=${activeLicenseOnly}&genre=${genreFilter}&titlePattern=${searchQuery}&artist=${artistFilter}`,
+        `/api/tracks?lastId=${lastId}&isLicensedOnly=${activeLicenseOnly}&genre=${genreFilter}&titlePattern=${searchQuery}&artistName=${artistFilter}`,
         navigate
       );
       setTracks(current);
 
       const next = await makeSafeAuthGet(
-        `/api/tracks?lastId=${lastId + 10}&isLicensedOnly=${activeLicenseOnly}&genre=${genreFilter}&titlePattern=${searchQuery}&artist=${artistFilter}`,
+        `/api/tracks?lastId=${lastId + 10}&isLicensedOnly=${activeLicenseOnly}&genre=${genreFilter}&titlePattern=${searchQuery}&artistName=${artistFilter}`,
         navigate
       );
       setNextTracks(next);
@@ -83,7 +82,7 @@ export function TrackDatabasePage() {
     setIsLoading(true);
     try {
       const fetchedArtists : ArtistDto[] = await makeSafeAuthGet(
-        `/api/artists?namePattern=${namePattern}`,
+        `/api/artists?namePattern=${namePattern}&lastId=${0}`,
         navigate
       );
       setArtists(fetchedArtists);

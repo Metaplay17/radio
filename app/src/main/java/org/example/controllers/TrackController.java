@@ -34,7 +34,7 @@ public class TrackController {
     @GetMapping("/api/tracks")
     @CheckRole(roles = {"ROLE_CONTENT_MANAGER", "ROLE_ANALYST", "ROLE_LICENSE_MANAGER", "ROLE_REDACTOR"})
     public ResponseEntity<List<TrackDto>> getTracks(@RequestParam(name = "titlePattern", required = false) String titlePattern, 
-        @RequestParam(name = "artists", required = false) String artist, @RequestParam(name = "lastId", required = true) Long lastId, 
+        @RequestParam(name = "artistName", required = false) String artist, @RequestParam(name = "lastId", required = true) Long lastId, 
         @RequestParam(name = "genre", required = false) String genre, @RequestParam(name = "isLicensedOnly", required = true) Boolean isLicensedOnly) {
         return ResponseEntity.ok().body(trackService.getTracks(titlePattern, artist, genre, lastId, isLicensedOnly));
     }

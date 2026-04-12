@@ -77,6 +77,7 @@ export function ContentManagerPage() {
         setIsModalOpen(true);
         setTrackArtistQuery('');
         setTrackGenreQuery('');
+        setTrackName('');
         setTrackDuration(0);
     } catch (err) {
         if (err instanceof ErrorResponseException) {
@@ -106,7 +107,7 @@ export function ContentManagerPage() {
   const searchArtists = async (e : KeyboardEvent<HTMLInputElement>) => {
     if (e.key == "Enter") {
         try {
-            const json : ArtistDto[] = await makeSafeAuthGet(`/api/artists?namePattern=${trackArtistQuery}`, navigate);
+            const json : ArtistDto[] = await makeSafeAuthGet(`/api/artists?namePattern=${trackArtistQuery}&lastId=${0}`, navigate);
             setArtists(json);
         } catch (err) {
             if (err instanceof ErrorResponseException) {

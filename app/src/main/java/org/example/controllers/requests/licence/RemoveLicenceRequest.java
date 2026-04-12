@@ -10,5 +10,5 @@ import lombok.Data;
 public class RemoveLicenceRequest {
     @NotNull(message = "LicenceId не может быть пустым")
     @Positive(message = "LicenceId должен быть положительным числом")
-    private Long licenceId;
+    private Long licenseId;
 }

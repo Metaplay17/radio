@@ -26,15 +26,15 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
 
     @NativeQuery("SELECT p.* " + 
     "FROM playlists AS p " + 
-    "WHERE (datetime::DATE = :date OR CAST(:date AS DATE) IS NULL) AND p.datetime > :lastDatetime " + 
-    "ORDER BY p.datetime DESC " + 
+    "WHERE (datetime::DATE = :date OR CAST(:date AS DATE) IS NULL) AND p.datetime < :lastDatetime " + 
+    "ORDER BY p.datetime ASC " + 
     "LIMIT 10")
     List<Playlist> findNextByDate(@Param("date") LocalDate date, @Param("lastDatetime") LocalDateTime lastDatetime);
 
     @NativeQuery("SELECT p.* " + 
     "FROM playlists AS p " + 
-    "WHERE (datetime::DATE = :date OR CAST(:date AS DATE) IS NULL) AND p.datetime < :lastDatetime " + 
-    "ORDER BY p.datetime ASC " + 
+    "WHERE (datetime::DATE = :date OR CAST(:date AS DATE) IS NULL) AND p.datetime > :lastDatetime " + 
+    "ORDER BY p.datetime DESC " + 
     "LIMIT 10")
     List<Playlist> findPrevByDate(@Param("date") LocalDate date, @Param("lastDatetime") LocalDateTime lastDatetime);
 }

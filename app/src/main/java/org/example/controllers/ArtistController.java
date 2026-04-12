@@ -33,7 +33,7 @@ public class ArtistController {
     }
 
     @GetMapping("/api/artists")
-    @CheckRole(roles = {"ROLE_CONTENT_MANAGER", "ROLE_REDACTOR", "ROLE_LICENSE_MANAGER"})
+    @CheckRole(roles = {"ROLE_CONTENT_MANAGER", "ROLE_REDACTOR", "ROLE_LICENSE_MANAGER", "ROLE_ANALYST"})
     public ResponseEntity<List<ArtistDto>> getArtists(@RequestParam(name = "namePattern", required = true) String namePattern, @RequestParam(name = "lastId", required = true) Long lastId) throws MissingServletRequestParameterException {
         return ResponseEntity.ok(artistService.getArtistByNamePattern(namePattern, lastId));
     }

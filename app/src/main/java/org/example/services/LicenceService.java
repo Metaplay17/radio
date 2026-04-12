@@ -31,7 +31,7 @@ public class LicenceService {
         int duration = request.getDuration();
         LocalDate registered = request.getRegistered();
 
-        Track track = trackRepository.findByTitleAndArtistName(trackSignature.getTitle(), trackSignature.getArtistName()).orElseThrow(() -> new NotFoundException("Трека с названием = " + trackSignature.getTitle() + " нет в базе"));
+        Track track = trackRepository.findByTitleAndArtistName(trackSignature.getTitle(), trackSignature.getArtistName()).orElseThrow(() -> new NotFoundException("Трека с названием = " + trackSignature.getTitle() + " и исполнителем = " + trackSignature.getArtistName() +  " нет в базе"));
 
         Licence licence = new Licence(track, registered, duration);
         licenceRepository.save(licence);
@@ -39,11 +39,17 @@ public class LicenceService {
 
     @NotNullArg
     public void removeLicence(RemoveLicenceRequest request) {
-        Licence licence = licenceRepository.findById(request.getLicenceId()).orElseThrow(() -> new NotFoundException("Лицензии с id = " + request.getLicenceId() + " нет в базе"));
+        Licence licence = licenceRepository.findById(request.getLicenseId()).orElseThrow(() -> new NotFoundException("Лицензии с id = " + request.getLicenseId() + " нет в базе"));
         LocalDate registered = licence.getRegistered();
         LocalDate now = LocalDate.now();
+        if (registered.isAfter(now)) {
+            licenceRepository.delete(licence);
+            licenceRepository.flush();
+            return;
+        }
         Long daysGone = registered.datesUntil(now).count();
         licence.setDuration(daysGone.intValue());
+        licenceRepository.save(licence);
     }
 
     public List<LicenceDto> getLicences(String trackTitle, String artistName, String type, Long lastId) {

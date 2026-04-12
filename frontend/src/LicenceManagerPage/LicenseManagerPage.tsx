@@ -1,7 +1,7 @@
 import React, { useState, useEffect, type KeyboardEvent } from 'react';
 import styles from './LicenseManagerPage.module.css';
-import type { TrackDto, ArtistDto, LicenseDto } from '../interfaces';
-import { ErrorResponseException, logout, makeSafeAuthGet, makeSafeAuthPost } from '../utils';
+import type { TrackDto, LicenseDto, OkResponse } from '../interfaces';
+import { ErrorResponseException, logout, makeSafeAuthDelete, makeSafeAuthGet, makeSafeAuthPost } from '../utils';
 import { useNavigate } from 'react-router-dom';
 import { InfoModal } from '../InfoModal/InfoModal';
 
@@ -30,7 +30,6 @@ export function LicensorPage() {
   const [nextLicenses, setNextLicenses] = useState<LicenseDto[]>([]);
 
   const [tracks, setTracks] = useState<TrackDto[]>([]);
-  const [artists, setArtists] = useState<ArtistDto[]>([]);
 
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -81,45 +80,15 @@ export function LicensorPage() {
     }
   };
 
-    const fetchArtists = async (pattern: string) => {
-      setIsLoading(true);
-      try {
-        const current: ArtistDto[] = await makeSafeAuthGet(
-          `/api/artists?lastId=${0}&namePattern=${pattern}`,
-          navigate
-        );
-        setArtists(current);
-      } catch (err) {
-        if (err instanceof ErrorResponseException) {
-          setModalMessage(err.message);
-          setIsModalOpen(true);
-        }
-        console.error('Ошибка загрузки исполнителей:', err);
-      } finally {
-        setIsLoading(false);
-      }
-    };
-
   const searchTracks = async (e : KeyboardEvent<HTMLInputElement>) => {
     if (e.key == "Enter") {
         await fetchTracks(filterTrackQuery);
     }
-  }
-
-  const searchArtists = async (e : KeyboardEvent<HTMLInputElement>) => {
-    if (e.key == "Enter") {
-        await fetchArtists(filterArtistQuery);
-    }
-  }
+  };
 
   useEffect(() => {
     fetchLicenses(lastId);
   }, []);
-
-  useEffect(() => {
-    setLastId(0);
-    fetchLicenses(0);
-  }, [filterTrackQuery, filterArtistQuery, filterExpired, filterExpiringSoon]);
 
   useEffect(() => {
     fetchLicenses(lastId);
@@ -132,18 +101,20 @@ export function LicensorPage() {
       return;
     }
 
-    if (!filterTrackQuery.trim()) {
+    if (!newLicenseTrackQuery.trim()) {
       setModalMessage('Выберите трек из списка');
       setIsModalOpen(true);
       return;
     }
 
     setIsLoading(true);
+    const trackTitle = newLicenseTrackQuery.split(" - ")[0];
+    const artistName = newLicenseTrackQuery.split(" - ")[1] || null;
     try {
       await makeSafeAuthPost('/api/licenses', navigate, {
-        trackSignature: {
-            title: filterTrackQuery,
-            artistName: filterArtistQuery
+        track: {
+            title: trackTitle,
+            artistName: artistName
         },
         registered: new Date(newLicenseStartDate),
         duration: newLicenseDurationDays
@@ -168,20 +139,60 @@ export function LicensorPage() {
     }
   };
 
-  // ========== Обработчики фильтров ==========
+  const searchLicenses = async () => {
+    const type : string = filterExpired ? "EXPIRED" : (filterExpiringSoon ? "WARNING" : "ALL");
+    let trackSignature : string[] = ["", ""];
+    if (filterTrackQuery.trim()) {
+      trackSignature = filterTrackQuery.split(" - ");
+    }
+    if (filterArtistQuery.trim()) {
+      trackSignature[1] = filterArtistQuery;
+    }
+    try {
+      const licenses : LicenseDto[] = await makeSafeAuthGet(`/api/licenses?type=${type}&trackTitle=${trackSignature[0]}&artistName=${trackSignature[1]}&lastId=${lastId}`, navigate);
+      setLicenses(licenses);
+    } catch (err) {
+      if (err instanceof ErrorResponseException) {
+        setModalMessage(err.message);
+        setIsModalOpen(true);
+      }
+      console.error(err);
+    }
+  };
+
+  const removeLicense = async (id: number) => {
+    try {
+      const json : OkResponse = await makeSafeAuthDelete(`/api/licenses`, navigate, {
+        licenseId: id
+      });
+      setLicenses(prev => prev.filter(license => license.id !== id));
+      setModalMessage(json.message);
+      setIsModalOpen(true);
+    } catch (err) {
+      if (err instanceof ErrorResponseException) {
+        setModalMessage(err.message);
+        setIsModalOpen(true);
+      }
+      console.error(err);
+    }
+  }
+
+
   const handleFilterTrackChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFilterTrackQuery(e.target.value);
   };
 
-  const handleFilterArtistChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterArtistQuery(e.target.value);
-  };
-
   const handleFilterExpiredChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked && filterExpiringSoon) {
+      setFilterExpiringSoon(false);
+    }
     setFilterExpired(e.target.checked);
   };
 
   const handleFilterExpiringSoonChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.checked && filterExpired) {
+      setFilterExpired(false);
+    }
     setFilterExpiringSoon(e.target.checked);
   };
 
@@ -256,13 +267,14 @@ export function LicensorPage() {
                 list="add-track-options"
                 value={newLicenseTrackQuery}
                 onChange={(e) => setNewLicenseTrackQuery(e.target.value)}
+                onKeyDown={(e) => searchTracks(e)}
                 placeholder="Начните вводить..."
                 className={styles.input}
                 required
               />
               <datalist id="add-track-options">
                 {tracks.map(track => (
-                  <option key={track.id} value={track.title} />
+                  <option key={track.id} value={track.title + " - " + track.artistName} />
                 ))}
               </datalist>
             </div>
@@ -322,25 +334,7 @@ export function LicensorPage() {
               />
               <datalist id="filter-track-options">
                 {tracks.map(track => (
-                  <option key={track.id} value={track.title} />
-                ))}
-              </datalist>
-            </div>
-
-            <div className={styles.filterGroup}>
-              <label htmlFor="filter-artist" className={styles.filterLabel}>Исполнитель</label>
-              <input
-                id="filter-artist"
-                list="filter-artist-options"
-                value={filterArtistQuery}
-                onChange={handleFilterArtistChange}
-                onKeyDown={searchArtists}
-                placeholder="Начните вводить..."
-                className={styles.input}
-              />
-              <datalist id="filter-artist-options">
-                {artists.map(artist => (
-                  <option key={artist.id} value={artist.name} />
+                  <option key={track.id} value={track.title + " - " + track.artistName} />
                 ))}
               </datalist>
             </div>
@@ -392,10 +386,12 @@ export function LicensorPage() {
               </div>
             ) : (
               licenses.map(license => {
+                const isExpired = new Date(license.registered).getTime() + license.duration * 86400 * 1000 < new Date().getTime();
+                const isExpiringSoon = new Date(license.registered).getTime() + license.duration * 86400 * 1000 < new Date().getTime() + 30 * 86400 + 1000 && new Date(license.registered).getTime() + license.duration * 86400 * 1000 > new Date().getTime();
                 return (
                   <div
                     key={license.id}
-                    className={`${styles.licenseItem} ${filterExpired ? styles.expired : ''} ${filterExpiringSoon ? styles.expiringSoon : ''}`}
+                    className={`${styles.licenseItem} ${isExpired ? styles.expired : ''} ${isExpiringSoon ? styles.expiringSoon : ''}`}
                     role="listitem"
                   >
                     <div className={styles.licenseInfo}>
@@ -403,6 +399,7 @@ export function LicensorPage() {
                       <span className={styles.licenseArtist}>{license.track.artistName}</span>
                     </div>
                     <div className={styles.licenseMeta}>
+                      <button className={styles.removeBtn} onClick={() => removeLicense(license.id)}>❌</button>
                       <div className={styles.licenseDates}>
                         <span className={styles.licenseDateLabel}>Начало:</span>
                         <time className={styles.licenseDate}>{formatDate(license.registered)}</time>
@@ -416,9 +413,9 @@ export function LicensorPage() {
                       <span className={styles.licenseDuration}>{license.duration} дн.</span>
                     </div>
                     <div className={styles.licenseBadges}>
-                      {filterExpired && <span className={styles.badgeExpired}>Истекла</span>}
-                      {filterExpiringSoon && <span className={styles.badgeExpiring}>Скоро истекает</span>}
-                      {!filterExpired && !filterExpiringSoon && <span className={styles.badgeActive}>Активна</span>}
+                      {isExpired && <span className={styles.badgeExpired}>Истекла</span>}
+                      {isExpiringSoon && <span className={styles.badgeExpiring}>Скоро истекает</span>}
+                      {!isExpired && !isExpiringSoon && <span className={styles.badgeActive}>Активна</span>}
                     </div>
                   </div>
                 );

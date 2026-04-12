@@ -46,6 +46,9 @@ const Login = () => {
                 case 'ROLE_ADMIN':
                     navigate('/admin');
                     break;
+                case 'ROLE_ANALYST':
+                    navigate('/analyst');
+                    break;
                 default:
                     setModalMessage("Получена неизвестная роль, обратитесь в поддержку");
                     setIsModalOpen(true);

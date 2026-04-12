@@ -9,7 +9,7 @@ export interface LoginResponse {
 }
 
 export interface TrackDto {
-  id: string;
+  id: number;
   title: string;
   artistName: string;
   duration: number;
@@ -33,7 +33,7 @@ export interface PlaylistDto {
     id: number,
     name: string,
     description: string,
-    datetime: Date,
+    datetime: string,
     duration: number
 }
 
@@ -61,4 +61,16 @@ export interface LicenseDto {
     track: TrackDto,
     registered: string,
     duration: number
+}
+
+export interface FeatureTypeDto {
+    id: number,
+    name: string
+}
+
+export interface FeatureDto {
+    track: TrackDto,
+    featureTypeId: number,
+    name: string,
+    value: number
 }

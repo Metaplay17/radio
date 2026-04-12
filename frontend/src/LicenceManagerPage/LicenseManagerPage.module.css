@@ -261,6 +261,23 @@
   transition: var(--lp-transition);
 }
 
+.removeBtn {
+  padding: 0.6rem 1rem;
+  background: transparent;
+  border: 1.5px solid var(--lp-border);
+  border-radius: 6px;
+  color: red;
+  font-size: 0.9rem;
+  cursor: pointer;
+  transition: var(--lp-transition);
+}
+
+.removeBtn:hover {
+  border-color: red;
+  color: var(--lp-primary);
+  background: rgba(255, 126, 137, 0.05);
+}
+
 .clearBtn:hover {
   border-color: var(--lp-primary);
   color: var(--lp-primary);

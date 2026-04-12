@@ -8,6 +8,8 @@ import { ContentManagerPage } from './ContentManagerPage/ContentManager.tsx'
 import { GenreDatabasePage } from './GenreComponent/GenrePage.tsx'
 import { ArtistDatabasePage } from './ArtistComponent/ArtistPage.tsx'
 import { LicensorPage } from './LicenceManagerPage/LicenseManagerPage.tsx'
+import { AdminPage } from './AdminPage/AdminPage.tsx'
+import { AnalystPage } from './AnalystPage/AnalystPage.tsx'
 
 function App() {
 
@@ -22,6 +24,8 @@ function App() {
             <Route path="/genres" element={<GenreDatabasePage />} />
             <Route path="/artists" element={<ArtistDatabasePage />} />
             <Route path="/license-manager" element={<LicensorPage />} />
+            <Route path="/admin" element={<AdminPage />} />
+            <Route path="/analyst" element={<AnalystPage />} />
         </Routes>
       </BrowserRouter>
   )

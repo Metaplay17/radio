@@ -23,7 +23,7 @@ public class AudioFeature {
     private double value;
 
     public AudioFeatureDto toDto() {
-        return new AudioFeatureDto(track.getId(), audioFeatureType.getId(), value);
+        return new AudioFeatureDto(track.toDto(), audioFeatureType.getId(), audioFeatureType.getName(), value);
     }
 
     @ManyToOne

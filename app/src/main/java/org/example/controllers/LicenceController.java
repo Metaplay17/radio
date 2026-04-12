@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import jakarta.validation.Valid;
+
 @RestController
 public class LicenceController {
     private final LicenceService licenceService;
@@ -26,16 +28,16 @@ public class LicenceController {
 
     @PostMapping("/api/licenses")
     @CheckRole(roles = {"ROLE_LICENSE_MANAGER"})
-    public ResponseEntity<OkResponse> createLicence(@RequestBody CreateLicenceRequest request) {
+    public ResponseEntity<OkResponse> createLicence(@RequestBody @Valid CreateLicenceRequest request) {
         licenceService.addLicence(request);
         return ResponseEntity.status(201).body(new OkResponse("Лицензия успешно добавлена"));
     }
 
     @DeleteMapping("/api/licenses")
     @CheckRole(roles = {"ROLE_LICENSE_MANAGER"})
-    public ResponseEntity<OkResponse> removeLicence(@RequestBody RemoveLicenceRequest request) {
+    public ResponseEntity<OkResponse> removeLicence(@RequestBody @Valid RemoveLicenceRequest request) {
         licenceService.removeLicence(request);
-        return ResponseEntity.status(200).body(new OkResponse("Лицензия отозвана с завтрашнего дня"));
+        return ResponseEntity.status(200).body(new OkResponse("Лицензия отозвана с завтрашнего дня либо удалена, если еще не была активна"));
     }
 
     @GetMapping("/api/licenses")

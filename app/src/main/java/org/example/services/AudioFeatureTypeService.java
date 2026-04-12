@@ -1,8 +1,11 @@
 package org.example.services;
 
+import java.util.List;
+
 import org.example.aspects.NotNullArg;
 import org.example.controllers.requests.CreateAudioFeatureTypeRequest;
 import org.example.entities.AudioFeatureType;
+import org.example.entities.dto.AudioFeatureTypeDto;
 import org.example.exceptions.ConflictException;
 import org.example.repositories.AudioFeatureTypeRepository;
 import org.springframework.stereotype.Service;
@@ -24,5 +27,9 @@ public class AudioFeatureTypeService {
 
         AudioFeatureType audioFeatureType = new AudioFeatureType(featureName);
         audioFeatureTypeRepository.save(audioFeatureType);
+    }
+
+    public List<AudioFeatureTypeDto> getAllAudioFeatureTypes() {
+        return audioFeatureTypeRepository.findAll().stream().map((AudioFeatureType t) -> t.toDto()).toList();
     }
 }

@@ -16,45 +16,89 @@ export function PlaylistHistoryPage() {
     navigate('/login');
   }
 
-  // Состояние фильтра и пагинации
   const [filterDate, setFilterDate] = useState('');
-  const [lastDatetime, setLastDatetime] = useState<Date>(new Date(Date.now()));
   const [playlists, setPlaylists] = useState<PlaylistDto[]>([]);
   const [nextPlaylists, setNextPlaylists] = useState<PlaylistDto[]>([]);
   const [prevPlaylists, setPrevPlaylists] = useState<PlaylistDto[]>([]);
 
-  const fetchPlaylists = async () => {
-    if (lastDatetime.getDate() != new Date(Date.now()).getDate()) {
-      const playlistsPrev : PlaylistDto[] = await makeSafeAuthGet(`/api/playlists?lastDatetime=${playlists[0].datetime.getMilliseconds()}&date=${filterDate}&isNext=false`, navigate);
-      setPrevPlaylists(playlistsPrev);
+  // Добавляем отдельное состояние для "якоря" пагинации
+  const [pageAnchor, setPageAnchor] = useState<Date>(new Date(Date.now()));
+
+  const fetchPlaylists = async (
+    filterDate: string, 
+    anchorDate: Date, 
+    direction: 'current' | 'prev' | 'next' = 'current'
+  ) => {
+    try {
+      // ✅ Используем getTime() вместо getMilliseconds()
+      const timestamp = anchorDate.getTime();
+      const isNext = direction !== 'prev';
+      
+      const url = `/api/playlists?lastDatetime=${timestamp}&date=${filterDate}&isNext=${isNext}`;
+      const result: PlaylistDto[] = await makeSafeAuthGet(url, navigate);
+      
+      if (direction === 'current') {
+        setPlaylists(result);
+        
+        if (result.length > 0) {
+          setSelectedPlaylistId(result[0].id);
+          // ✅ Обновляем "якорь" для следующей пагинации
+          setPageAnchor(new Date(result[result.length - 1].datetime));
+        } else {
+          setSelectedPlaylistId(null);
+        }
+      } else if (direction === 'prev') {
+        setPrevPlaylists(result);
+      } else {
+        setNextPlaylists(result);
+      }
+    } catch (error) {
+      console.error(`Ошибка при загрузке плейлистов (${direction}):`, error);
+      // Опционально: показать ошибку пользователю
     }
-    const playlistsCurrent : PlaylistDto[] = await makeSafeAuthGet(`/api/playlists?lastDatetime=${lastDatetime.getMilliseconds()}&date=${filterDate}&isNext=true`, navigate);
-    setSelectedPlaylistId(playlistsCurrent[0].id);
-    setPlaylists(playlistsCurrent);
-    setLastDatetime(playlistsCurrent[playlistsCurrent.length - 1].datetime);
-    const playlistsNext : PlaylistDto[] = await makeSafeAuthGet(`/api/playlists?lastDatetime=${playlistsCurrent[playlistsCurrent.length - 1].datetime.getMilliseconds()}&date=${filterDate}&isNext=true`, navigate);
-    setNextPlaylists(playlistsNext);
-  }
-
-  useEffect(() => {
-    fetchPlaylists();
-  }, []);
-
-useEffect(() => {
-    fetchPlaylists();
-  }, [lastDatetime]);
-
-  // Обработчики
-  const handleFilterChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
-    setFilterDate(e.target.value);
-  }, []);
-
-  const handlePageNext = () => {
-    setLastDatetime(playlists[playlists.length - 1].datetime);
   };
 
+  // 1. Загружаем основной список при изменении фильтра ИЛИ якоря пагинации
+  useEffect(() => {
+    fetchPlaylists(filterDate, pageAnchor, 'current');
+  }, [filterDate, pageAnchor]);
+
+  // 2. Предзагружаем соседние страницы ПОСЛЕ того, как основной список загрузился
+  useEffect(() => {
+    if (playlists.length === 0) return;
+    
+    const firstTime = new Date(playlists[0].datetime);
+    const lastTime = new Date(playlists[playlists.length - 1].datetime);
+    
+    // Загружаем предыдущую и следующую страницы параллельно
+    fetchPlaylists(filterDate, firstTime, 'prev');
+    fetchPlaylists(filterDate, lastTime, 'next');
+  }, [playlists, filterDate]); // ✅ playlists в зависимостях — триггер после загрузки
+
+  const handleFilterChange = useCallback((e: React.ChangeEvent<HTMLInputElement>) => {
+    const newDate = e.target.value;
+    setFilterDate(newDate);
+    // ✅ При смене фильтра сбрасываем якорь на "сейчас" → первая страница
+    setPageAnchor(new Date(Date.now()));
+  }, []);
+
+  // Переход на следующую страницу: якорь = последний элемент текущей страницы
+  const handlePageNext = () => {
+    if (playlists.length > 0) {
+      setPageAnchor(new Date(playlists[playlists.length - 1].datetime));
+    }
+  };
+
+  // Переход на предыдущую страницу: 
+  // ⚠️ Здесь нужна логика "якоря" для предыдущей страницы. 
+  // Простой вариант: использовать первый элемент текущей страницы как точку отсчёта
   const handlePagePrev = () => {
-    setLastDatetime(playlists[0].datetime);
+    if (prevPlaylists.length > 0) {
+      // Загружаем prevPlaylists как основную страницу
+      setPlaylists(prevPlaylists);
+      setPageAnchor(new Date(prevPlaylists[0].datetime));
+      setPrevPlaylists([]); // Очищаем, чтобы не дублировать
+    }
   };
 
   const handlePlaylistClick = useCallback((id: number) => {
@@ -106,7 +150,9 @@ useEffect(() => {
               className={styles.dateInput}
             />
           </div>
-          <button onClick={fetchPlaylists} className={styles.searchBtn}>
+          <button onClick={() => {
+            setPageAnchor(new Date(Date.now()));
+          }} className={styles.searchBtn}>
             Найти
           </button>
           <button onClick={() => navigate("/redactor")} className={styles.backBtn}>
@@ -137,7 +183,7 @@ useEffect(() => {
                 >
                   <div className={styles.itemInfo}>
                     <span className={styles.itemTitle}>{playlist.name}</span>
-                    <time className={styles.itemDate}>{formatDate(playlist.datetime)}</time>
+                    <time className={styles.itemDate}>{formatDate(new Date(playlist.datetime))}</time>
                   </div>
                   <span className={styles.itemDuration}>⏱ {formatDuration(playlist.duration)}</span>
                 </button>

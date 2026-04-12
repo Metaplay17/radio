@@ -1,8 +1,8 @@
 import { useNavigate } from "react-router-dom";
-import React, { useState, useCallback } from 'react';
+import React, { useState, useCallback, type KeyboardEvent } from 'react';
 import styles from './Redactor.module.css';
-import type { OkResponse, PlaylistForm, TrackScoreDto } from "../interfaces";
-import { ErrorResponseException, logout, makeSafeAuthPost } from "../utils";
+import type { OkResponse, PlaylistForm, TrackDto, TrackScoreDto } from "../interfaces";
+import { ErrorResponseException, logout, makeSafeAuthGet, makeSafeAuthPost } from "../utils";
 import { InfoModal } from "../InfoModal/InfoModal";
 
 export function RedactorPage() {
@@ -31,6 +31,8 @@ export function RedactorPage() {
     dateTime: ''
   });
 
+  const [searchedTracks, setSearchedTracks] = useState<TrackDto[]>([]);
+
   // Выбранные треки
   const [tracks, setTracks] = useState<TrackScoreDto[]>([]);
 
@@ -38,6 +40,28 @@ export function RedactorPage() {
     const { name, value } = e.target;
     setFilters(prev => ({ ...prev, [name]: value }));
   }, []);
+
+  const fetchTracks = async (namePattern : string) => {
+        try {
+            const current = await makeSafeAuthGet(
+              `/api/tracks?lastId=${0}&isLicensedOnly=false&genre=&titlePattern=${namePattern}&artist=`,
+              navigate
+            );
+            setSearchedTracks(current);
+        } catch (err) {
+            if (err instanceof ErrorResponseException) {
+                setModalMessage(err.message);
+                setIsModalOpen(true);
+            }
+            console.error('Ошибка загрузки треков:', err);
+        }
+    };
+
+  const searchTracks = async (e : KeyboardEvent) => {
+    if (e.key === 'Enter') {
+      await fetchTracks(filters.anchorTrack);
+    }
+  }
 
   const handleGenerate = async () => {
     try {
@@ -94,21 +118,11 @@ export function RedactorPage() {
     setPlaylist(prev => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleAddTrack = useCallback(() => {
-    const newTrack: TrackScoreDto = {
-      track: {
-        id: crypto.randomUUID(),
-        title: `Трек ${tracks.length + 1}`,
-        artistName: 'Исполнитель 1',
-        duration: Math.floor(Math.random() * 180) + 150,
-        genreName: 'Жанр 1'
-      },
-      score: 100
-    };
+  const handleAddTrack = () => {
     setTracks(prev => [...prev, newTrack]);
-  }, [tracks.length]);
+  };
 
-  const handleDeleteTrack = useCallback((id: string) => {
+  const handleDeleteTrack = useCallback((id: number) => {
     setTracks(prev => prev.filter(t => t.track.id !== id));
   }, []);
 
@@ -145,7 +159,7 @@ export function RedactorPage() {
         {/* Левая панель: Параметры */}
         <section className={styles.leftPanel}>
           <h2 className={styles.panelTitle}>Параметры генерации</h2>
-          <form className={styles.filterForm} onSubmit={(e) => e.preventDefault()}>
+          <div className={styles.filterForm}>
             <div className={styles.formGroup}>
               <label htmlFor="duration">Длительность (сек)</label>
               <input
@@ -184,16 +198,23 @@ export function RedactorPage() {
                 list="tracksOptions"
                 value={filters.anchorTrack}
                 onChange={handleFilterChange}
+                onKeyDown={(e) => searchTracks(e)}
                 placeholder="Начните вводить..."
                 className={styles.input}
               />
               <datalist id="tracksOptions">
-                <option value="XDD" />
+                {
+                  searchedTracks.map(track => {
+                    return (
+                      <option value={track.title + " - " + track.artistName} />
+                    )
+                  })
+                }
               </datalist>
             </div>
 
             <button className={styles.primaryBtn} onClick={handleGenerate}>Сформировать</button>
-          </form>
+          </div>
         </section>
 
         {/* Правая панель: Редактор плейлиста */}
