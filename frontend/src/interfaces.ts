@@ -18,7 +18,7 @@ export interface TrackDto {
 
 export interface TrackScoreDto {
     track: TrackDto,
-    score: number
+    score: number | null
 }
 
 export interface PlaylistForm {

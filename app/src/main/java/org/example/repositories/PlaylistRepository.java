@@ -1,7 +1,6 @@
 package org.example.repositories;
 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 import java.util.List;
 
 import org.example.entities.Playlist;
@@ -26,15 +25,35 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
 
     @NativeQuery("SELECT p.* " + 
     "FROM playlists AS p " + 
-    "WHERE (datetime::DATE = :date OR CAST(:date AS DATE) IS NULL) AND p.datetime < :lastDatetime " + 
-    "ORDER BY p.datetime ASC " + 
-    "LIMIT 10")
-    List<Playlist> findNextByDate(@Param("date") LocalDate date, @Param("lastDatetime") LocalDateTime lastDatetime);
+    "WHERE p.datetime::DATE = :date " + 
+    "ORDER BY p.datetime DESC")
+    List<Playlist> findAllByDate(@Param("date") LocalDate date);
 
-    @NativeQuery("SELECT p.* " + 
-    "FROM playlists AS p " + 
-    "WHERE (datetime::DATE = :date OR CAST(:date AS DATE) IS NULL) AND p.datetime > :lastDatetime " + 
-    "ORDER BY p.datetime DESC " + 
-    "LIMIT 10")
-    List<Playlist> findPrevByDate(@Param("date") LocalDate date, @Param("lastDatetime") LocalDateTime lastDatetime);
+    // @NativeQuery("SELECT p.* " + 
+    // "FROM playlists AS p " + 
+    // "WHERE (datetime::DATE = :date OR CAST(:date AS DATE) IS NULL) AND p.datetime < :lastDatetime " + 
+    // "ORDER BY p.datetime DESC " + 
+    // "LIMIT 10")
+    // List<Playlist> findOlderByDate(@Param("date") LocalDate date, @Param("lastDatetime") LocalDateTime lastDatetime);
+
+    // @NativeQuery("SELECT p.* " + 
+    // "FROM playlists AS p " + 
+    // "WHERE (datetime::DATE = :date OR CAST(:date AS DATE) IS NULL) AND p.datetime >= :lastDatetime " + 
+    // "ORDER BY p.datetime ASC " + 
+    // "LIMIT 10")
+    // List<Playlist> findNewerByDate(@Param("date") LocalDate date, @Param("lastDatetime") LocalDateTime lastDatetime);
+
+    // @NativeQuery("SELECT EXISTS " + 
+    // "(SELECT 1 " + 
+    // "FROM playlists AS p " + 
+    // "WHERE p.datetime::DATE >= :date " + 
+    // "ORDER BY p.datetime DESC)")
+    // boolean hasNewerByDate(@Param("date") LocalDate date);
+
+    // @NativeQuery("SELECT EXISTS " + 
+    // "(SELECT 1 " + 
+    // "FROM playlists AS p " + 
+    // "WHERE p.datetime::DATE < :date " + 
+    // "ORDER BY p.datetime DESC)")
+    // boolean hasOlderByDate(@Param("date") LocalDate date);
 }

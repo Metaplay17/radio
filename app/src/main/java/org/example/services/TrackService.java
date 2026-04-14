@@ -12,6 +12,7 @@ import org.example.entities.Licence;
 import org.example.entities.Track;
 import org.example.entities.dto.TrackDto;
 import org.example.exceptions.ConflictException;
+import org.example.exceptions.LicenceExpiredException;
 import org.example.exceptions.NotFoundException;
 import org.example.repositories.ArtistRepository;
 import org.example.repositories.GenreRepository;
@@ -64,5 +65,16 @@ public class TrackService {
         else {
             return trackRepository.findByTitlePatternAndArtistAndGenre(titlePattern, artistId, genreId, lastId).stream().map((Track t) -> t.toDto()).collect(Collectors.toList());
         }
+    }
+
+    public TrackDto findTrack(String title, String artistName) {
+        Track track = trackRepository.findByTitleAndArtistName(title, artistName).orElseThrow(() -> new NotFoundException("Трека с названием " + title + " и исполнителем " + artistName + " нет в базе"));
+        if (track.getLicences().stream().anyMatch((Licence l) -> l.getRegistered().plusDays(l.getDuration()).isAfter(LocalDate.now()))) {
+            return track.toDto();
+        }
+        else {
+            throw new LicenceExpiredException("У трека с названием " + title + " и исполнителем " + artistName + " нет активной лицензии");
+        }
+
     }
 }

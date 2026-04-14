@@ -38,4 +38,11 @@ public class TrackController {
         @RequestParam(name = "genre", required = false) String genre, @RequestParam(name = "isLicensedOnly", required = true) Boolean isLicensedOnly) {
         return ResponseEntity.ok().body(trackService.getTracks(titlePattern, artist, genre, lastId, isLicensedOnly));
     }
+
+    @GetMapping("/api/tracks/find")
+    @CheckRole(roles = {"ROLE_CONTENT_MANAGER", "ROLE_ANALYST", "ROLE_LICENSE_MANAGER", "ROLE_REDACTOR"})
+    public ResponseEntity<TrackDto> findTrack(@RequestParam(name = "title", required = false) String titlePattern, 
+        @RequestParam(name = "artistName", required = false) String artist) {
+        return ResponseEntity.ok().body(trackService.findTrack(titlePattern, artist));
+    }
 }

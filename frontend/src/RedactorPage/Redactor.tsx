@@ -4,6 +4,7 @@ import styles from './Redactor.module.css';
 import type { OkResponse, PlaylistForm, TrackDto, TrackScoreDto } from "../interfaces";
 import { ErrorResponseException, logout, makeSafeAuthGet, makeSafeAuthPost } from "../utils";
 import { InfoModal } from "../InfoModal/InfoModal";
+import { SelectTrackModal } from "./SelectTrackModal";
 
 export function RedactorPage() {
   const navigate = useNavigate();
@@ -14,6 +15,7 @@ export function RedactorPage() {
   const username = localStorage.getItem("username");
 
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [isSelectTrackOpen, setIsSelectTrackOpen] = useState<boolean>(false);
   const [modalMessage, setModalMessage] = useState<string>('');
 
   // Левая панель
@@ -118,8 +120,21 @@ export function RedactorPage() {
     setPlaylist(prev => ({ ...prev, [name]: value }));
   }, []);
 
-  const handleAddTrack = () => {
-    setTracks(prev => [...prev, newTrack]);
+  const handleAddTrack = async (trackSignature : string) => {
+    try {
+      const track = await makeSafeAuthGet(`/api/tracks/find?title=${trackSignature.split(" - ")[0]}&artistName=${trackSignature.split(" - ")[1]}`, navigate);
+      const newTrack : TrackScoreDto = {
+        track: track,
+        score: null
+      }
+      setTracks(prev => [...prev, newTrack]);
+    } catch (err) {
+      if (err instanceof ErrorResponseException) {
+        setModalMessage(err.message);
+        setIsModalOpen(true);
+      }
+      console.log(err)
+    }
   };
 
   const handleDeleteTrack = useCallback((id: number) => {
@@ -138,7 +153,8 @@ export function RedactorPage() {
 
   return (
     <div className={styles.page}>
-      <InfoModal isOpen={isModalOpen} message={modalMessage} title="Информация" onClose={() => {setIsModalOpen(false)}}  />
+      <InfoModal isOpen={isModalOpen} message={modalMessage} title="Информация" onClose={() => {setIsModalOpen(false)}} />
+      <SelectTrackModal isOpen={isSelectTrackOpen} onClose={() => setIsSelectTrackOpen(false)} onAdd={handleAddTrack}  />
       {/* Верхняя панель */}
       <header className={styles.header}>
         <h1 className={styles.mainTitle}>Страница музыкального редактора</h1>
@@ -235,7 +251,7 @@ export function RedactorPage() {
           </div>
 
           <div className={styles.tracksSection}>
-            <button onClick={handleAddTrack} className={styles.secondaryBtn}>+ Добавить трек</button>
+            <button onClick={() => setIsSelectTrackOpen(true)} className={styles.secondaryBtn}>+ Добавить трек</button>
             <div className={styles.tracksList}>
                 <div className={styles.trackInfo}>
                     <span className={styles.trackTitle}>Название</span>
@@ -252,7 +268,7 @@ export function RedactorPage() {
                       <span className={styles.trackTitle}>{track.track.title}</span>
                       <span className={styles.trackArtist}>{track.track.artistName}</span>
                       <span className={styles.trackDuration}>{formatDuration(track.track.duration)}</span>
-                      <span className={styles.trackTitle}>{track.score}</span>
+                      <span className={styles.trackTitle}>{track.score == null || track.score == undefined ? "-" : track.score}</span>
                     </div>
                     <button 
                       onClick={() => handleDeleteTrack(track.track.id)} 

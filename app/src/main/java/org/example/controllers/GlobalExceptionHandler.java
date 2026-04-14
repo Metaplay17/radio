@@ -6,6 +6,7 @@ import org.example.controllers.responses.ErrorResponse;
 import org.example.exceptions.AccessDeniedException;
 import org.example.exceptions.ConflictException;
 import org.example.exceptions.IncorrectArgumentGivenException;
+import org.example.exceptions.LicenceExpiredException;
 import org.example.exceptions.NotFoundException;
 import org.example.exceptions.RotationOverusedException;
 import org.example.exceptions.UserNotFoundException;
@@ -55,6 +56,11 @@ public class GlobalExceptionHandler {
     @ExceptionHandler(BadCredentialsException.class)
     public ResponseEntity<ErrorResponse> handleBadCredentialsException(BadCredentialsException e) {
         return ResponseEntity.status(401).body(new ErrorResponse(HttpStatus.UNAUTHORIZED, "Проверьте данные для входа"));
+    }
+
+    @ExceptionHandler(LicenceExpiredException.class)
+    public ResponseEntity<ErrorResponse> handleLicenceExpiredException(LicenceExpiredException e) {
+        return ResponseEntity.status(403).body(new ErrorResponse(HttpStatus.FORBIDDEN, e.getMessage()));
     }
 
     @ExceptionHandler(RotationOverusedException.class)
