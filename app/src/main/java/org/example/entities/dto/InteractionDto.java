@@ -9,7 +9,7 @@ import lombok.Data;
 @AllArgsConstructor
 public class InteractionDto {
     private long id;
-    private long trackId;
+    private TrackDto track;
     private String context;
     private int interactionTypeId;
     private LocalDateTime datetime;

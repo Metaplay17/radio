@@ -140,7 +140,7 @@ export function LicensorPage() {
   };
 
   const searchLicenses = async () => {
-    const type : string = filterExpired ? "EXPIRED" : (filterExpiringSoon ? "WARNING" : "ALL");
+    const type : string = filterExpired ? "EXPIRED" : (filterExpiringSoon ? "WARNING" : "ACTIVE");
     let trackSignature : string[] = ["", ""];
     if (filterTrackQuery.trim()) {
       trackSignature = filterTrackQuery.split(" - ");
@@ -399,7 +399,7 @@ export function LicensorPage() {
                       <span className={styles.licenseArtist}>{license.track.artistName}</span>
                     </div>
                     <div className={styles.licenseMeta}>
-                      <button className={styles.removeBtn} onClick={() => removeLicense(license.id)}>❌</button>
+                      <button className={`${styles.removeBtn} ${isExpired ? styles.hidden : ""}`} onClick={() => removeLicense(license.id)}>❌</button>
                       <div className={styles.licenseDates}>
                         <span className={styles.licenseDateLabel}>Начало:</span>
                         <time className={styles.licenseDate}>{formatDate(license.registered)}</time>

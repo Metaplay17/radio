@@ -33,7 +33,7 @@ public class Interaction {
     private LocalDateTime datetime = LocalDateTime.now();
 
     public InteractionDto toDto() {
-        return new InteractionDto(id, track.getId(), context, interactionType.getId(), datetime);
+        return new InteractionDto(id, track.toDto(), context, interactionType.getId(), datetime);
     }
 
     @ManyToOne

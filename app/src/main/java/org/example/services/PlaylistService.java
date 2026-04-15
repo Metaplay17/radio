@@ -51,7 +51,7 @@ public class PlaylistService {
         Optional<TrackSignature> anchorTrackSignature = request.getAnchorTrack();
         LocalDate date = request.getDate();
         List<Track> tracks = trackRepository.findAllWithActiveLicense(date);
-        tracks = rotationService.getAvailableTracks(tracks);
+        tracks = rotationService.getAvailableTracks(tracks, date);
         System.out.println(tracks.size());
 
         Map<Double, Track> trackScores = new HashMap<Double, Track>();

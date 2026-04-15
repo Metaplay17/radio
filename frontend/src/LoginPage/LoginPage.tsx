@@ -55,7 +55,7 @@ const Login = () => {
                     break;
             }
         }
-        else if (response.status == 403) {
+        else if (response.status == 401) {
             setModalMessage("Проверьте правильность логина и пароля");
             setIsModalOpen(true);
         }

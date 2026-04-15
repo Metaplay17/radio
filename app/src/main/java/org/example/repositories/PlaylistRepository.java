@@ -14,14 +14,14 @@ public interface PlaylistRepository extends JpaRepository<Playlist, Integer> {
     @NativeQuery("SELECT COUNT(*) " + 
     "FROM playlists AS p " + 
     "JOIN playlists_tracks AS pt ON p.id = pt.playlist_id AND pt.track_id = :trackId " + 
-    "WHERE p.datetime >= CURRENT_DATE - INTERVAL '1 day'")
-    Integer findTrackCountPerDay(@Param("trackId") Long trackId);
+    "WHERE p.datetime >= CAST(:date AS DATE) - INTERVAL '1 day' AND p.datetime <= CAST(:date AS DATE) + INTERVAL '1 day'")
+    Integer findTrackCountPerDay(@Param("trackId") Long trackId, @Param("date") LocalDate date);
 
     @NativeQuery("SELECT COUNT(*) " + 
     "FROM playlists AS p " + 
     "JOIN playlists_tracks AS pt ON p.id = pt.playlist_id AND pt.track_id = :trackId " + 
-    "WHERE p.datetime >= CURRENT_DATE - INTERVAL '1 week'")
-    Integer findTrackCountPerWeek(@Param("trackId") Long trackId);
+    "WHERE p.datetime >= CAST(:date AS DATE) - INTERVAL '1 week' AND p.datetime <= CAST(:date AS DATE) + INTERVAL '1 week'")
+    Integer findTrackCountPerWeek(@Param("trackId") Long trackId, @Param("date") LocalDate date);
 
     @NativeQuery("SELECT p.* " + 
     "FROM playlists AS p " + 

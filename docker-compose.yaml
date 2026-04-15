@@ -1,0 +1,27 @@
+services:
+  db:
+    image: postgres:16-alpine
+    container_name: db
+    environment:
+      POSTGRES_DB: ${DB_NAME}
+      POSTGRES_USER: ${DB_USERNAME}
+      POSTGRES_PASSWORD: ${DB_PASSWORD}
+    ports:
+    - "5432:5432" # ПОТОМ УБРАТЬ!!!
+    volumes:
+      - pg_data:/var/lib/postgresql/data
+  
+  app:
+    build: .
+    container_name: spring
+    env_file:
+      - app/.env
+    ports:
+     - "8080:8080"
+    depends_on:
+      - db
+    restart: unless-stopped
+
+volumes:
+  pg_data:
+      

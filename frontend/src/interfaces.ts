@@ -74,3 +74,16 @@ export interface FeatureDto {
     name: string,
     value: number
 }
+
+export interface InteractionTypeDto {
+    id: number,
+    name: string
+}
+
+export interface InteractionDto {
+    id: number,
+    track: TrackDto,
+    interactionTypeId: number,
+    context: string,
+    datetime: string
+}

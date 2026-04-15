@@ -9,6 +9,7 @@ import java.util.stream.Collectors;
 import org.example.aspects.NotNullArg;
 import org.example.controllers.requests.CreateInteractionRequest;
 import org.example.controllers.requests.InteractionDto;
+import org.example.controllers.responses.InteractionAnalyticResponse;
 import org.example.entities.Interaction;
 import org.example.entities.InteractionType;
 import org.example.entities.Track;
@@ -51,15 +52,21 @@ public class InteractionService {
         interactionRepository.saveAll(interactions);
     }
 
-    public List<InteractionAnalyticDto> getInteractionsAnalytics(String interactionTypeName, LocalDateTime from, LocalDateTime to, Integer count, Long trackId) {
+    public InteractionAnalyticResponse getInteractionsAnalytics(String interactionTypeName, LocalDateTime from, LocalDateTime to, Integer count, String trackTitle, String artistName) {
         Integer interactionTypeId = null;
-        if (interactionTypeName != null) {
+        if (interactionTypeName != null && !interactionTypeName.isEmpty()) {
             interactionTypeId = interactionTypeRepository.findByName(interactionTypeName).orElseThrow(() -> new NotFoundException("Типа взаимодействия с именем " + interactionTypeName + " нет в базе")).getId();
+        }
+        Long trackId = null;
+        Track track = null;
+        if (trackTitle != null && artistName != null && !trackTitle.isEmpty() && !artistName.isEmpty()) {
+            track = trackRepository.findByTitleAndArtistName(trackTitle, artistName).orElseThrow(() -> new NotFoundException("Трека с названием " + trackTitle + " и исполнителем " + artistName + " нет в базе"));
+            trackId = track.getId();
         }
         List<Interaction> interactions = interactionRepository.findAnalyticInteraction(interactionTypeId, from, to, count, trackId);
         Map<Object, Object> interactionsTracks = interactions.stream().collect(Collectors.toMap(i -> i, i -> i.getTrack()));
         List<InteractionAnalyticDto> result = interactionsTracks.keySet().stream().collect(Collectors.toList()).stream().map(it -> new InteractionAnalyticDto(((Interaction)it).getTrack().toDto(), ((Interaction)it).getContext(), ((Interaction)it).getInteractionType().getName(), ((Interaction)it).getDatetime())).collect(Collectors.toList());
-        return result;
+        return new InteractionAnalyticResponse(from, to, track.toDto(), result);
     }
 
     public List<InteractionTypeStats> formRaoReport(LocalDateTime from, LocalDateTime to) {

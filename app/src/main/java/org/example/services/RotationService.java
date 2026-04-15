@@ -21,12 +21,12 @@ public class RotationService {
     }
 
     @NotNullArg
-    public List<Track> getAvailableTracks(List<Track> tracks) {
-        return tracks.stream().filter(track -> playlistRepository.findTrackCountPerDay(track.getId()) <= MAX_COUNT_PER_DAY && playlistRepository.findTrackCountPerWeek(track.getId()) <= MAX_COUNT_PER_WEEK).collect(Collectors.toList());
+    public List<Track> getAvailableTracks(List<Track> tracks, LocalDate date) {
+        return tracks.stream().filter(track -> playlistRepository.findTrackCountPerDay(track.getId(), date) <= MAX_COUNT_PER_DAY && playlistRepository.findTrackCountPerWeek(track.getId(), date) <= MAX_COUNT_PER_WEEK).collect(Collectors.toList());
     }
 
     @NotNullArg
     public boolean isAvailable(Track track, LocalDate date) {
-        return playlistRepository.findTrackCountPerDay(track.getId()) <= MAX_COUNT_PER_DAY && playlistRepository.findTrackCountPerWeek(track.getId()) <= MAX_COUNT_PER_WEEK;
+        return playlistRepository.findTrackCountPerDay(track.getId(), date) <= MAX_COUNT_PER_DAY && playlistRepository.findTrackCountPerWeek(track.getId(), date) <= MAX_COUNT_PER_WEEK;
     }
 }

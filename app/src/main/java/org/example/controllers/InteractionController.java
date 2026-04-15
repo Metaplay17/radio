@@ -36,10 +36,11 @@ public class InteractionController {
 
     @GetMapping("/api/interactions")
     @CheckRole(roles = {"ROLE_ANALYST"})
-    public ResponseEntity<InteractionAnalyticResponse> getInteractionsAnalytics(@RequestParam(required = false) String interactionType, @RequestParam(required = false) Long msecFrom, @RequestParam(required = false) Long msecTo, @RequestParam Integer count, @RequestParam(required = false) Long trackId) {
+    public ResponseEntity<InteractionAnalyticResponse> getInteractionsAnalytics(@RequestParam(required = false) String interactionType, @RequestParam(required = true) Long msecFrom, 
+    @RequestParam(name = "msecTo", required = true) Long msecTo, @RequestParam(name = "count", required = true) Integer count, @RequestParam(name = "trackTitle", required = false) String trackTitle, @RequestParam(name = "artistName", required = false) String artistName) {
         LocalDateTime from = LocalDateTime.ofInstant(Instant.ofEpochMilli(msecFrom), ZoneId.systemDefault());
         LocalDateTime to = LocalDateTime.ofInstant(Instant.ofEpochMilli(msecTo), ZoneId.systemDefault());
-        return ResponseEntity.ok().body(new InteractionAnalyticResponse(interactionService.getInteractionsAnalytics(interactionType, from, to, count, trackId)));
+        return ResponseEntity.ok().body(interactionService.getInteractionsAnalytics(interactionType, from, to, count, trackTitle, artistName));
     }
 
     @GetMapping("/api/interactions/rao-report")

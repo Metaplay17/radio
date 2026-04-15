@@ -1,8 +1,11 @@
 package org.example.services;
 
+import java.util.List;
+
 import org.example.aspects.NotNullArg;
 import org.example.controllers.requests.CreateInteractionTypeRequest;
 import org.example.entities.InteractionType;
+import org.example.entities.dto.InteractionTypeDto;
 import org.example.exceptions.ConflictException;
 import org.example.repositories.InteractionTypeRepository;
 import org.springframework.stereotype.Service;
@@ -24,5 +27,9 @@ public class InteractionTypeService {
 
         InteractionType interactionType = new InteractionType(interactionTypeName);
         interactionTypeRepository.save(interactionType);
+    }
+
+    public List<InteractionTypeDto> getAllInteractionTypes() {
+        return interactionTypeRepository.findAll().stream().map((InteractionType t) -> t.toDto()).toList();
     }
 }

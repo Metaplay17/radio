@@ -4,6 +4,7 @@ import type { TrackDto, FeatureTypeDto, FeatureDto, OkResponse } from '../interf
 import { ErrorResponseException, logout, makeSafeAuthGet, makeSafeAuthPost, makeSafeAuthDelete } from '../utils';
 import { useNavigate } from 'react-router-dom';
 import { InfoModal } from '../InfoModal/InfoModal';
+import { FormReportModal } from './FormReportModal';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -33,6 +34,8 @@ export function AnalystPage() {
   const [isLoading, setIsLoading] = useState(false);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalMessage, setModalMessage] = useState('');
+
+  const [isFormReportOpen, setIsFormReportOpen] = useState(false);
 
   const fetchFeatureTypes = async () => {
     try {
@@ -195,6 +198,7 @@ export function AnalystPage() {
   return (
     <div className={styles.page}>
       <InfoModal title="Информация" isOpen={isModalOpen} onClose={() => setIsModalOpen(false)} message={modalMessage} />
+      <FormReportModal onClose={() => setIsFormReportOpen(false)} isOpen={isFormReportOpen} />
 
       {/* Верхняя панель */}
       <header className={styles.header}>
@@ -209,6 +213,9 @@ export function AnalystPage() {
       <nav className={styles.navButtons}>
         <button onClick={() => navigate('/tracks')} className={styles.navBtn}>
           Обзор треков
+        </button>
+        <button onClick={() => setIsFormReportOpen(true)} className={styles.navBtn}>
+          Составить отчет
         </button>
       </nav>
 
