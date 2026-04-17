@@ -11,7 +11,7 @@ export function ArtistDatabasePage() {
   const username = localStorage.getItem("username");
   const navigate = useNavigate();
 
-  if (!['ROLE_REDACTOR', 'ROLE_CONTENT_MANAGER', 'ROLE_ANALYST'].includes(localStorage.getItem('privilege') || '')) {
+  if (!['ROLE_REDACTOR', 'ROLE_CONTENT_MANAGER', 'ROLE_ANALYST', 'ROLE_LICENSE_MANAGER'].includes(localStorage.getItem('privilege') || '')) {
     window.location.href = '/login';
     return null;
   }

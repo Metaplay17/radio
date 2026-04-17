@@ -33,7 +33,7 @@ public class GenreController {
     }
 
     @GetMapping("/api/genres")
-    @CheckRole(roles = {"ROLE_CONTENT_MANAGER", "ROLE_REDACTOR", "ROLE_ANALYST"})
+    @CheckRole(roles = {"ROLE_CONTENT_MANAGER", "ROLE_REDACTOR", "ROLE_ANALYST", "ROLE_LICENSE_MANAGER"})
     public ResponseEntity<List<GenreDto>> getGenres() {
         return ResponseEntity.ok(genreService.getAllGenres());
     }

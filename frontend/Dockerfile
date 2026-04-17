@@ -1,11 +1,12 @@
-FROM node:25-alpine AS builder
+FROM node:22-alpine AS builder
 
 WORKDIR /app
-COPY package.json /app/package.json
-RUN npm install
+COPY package*.json ./
+RUN npm ci
 COPY . .
 RUN npm run build
 
-FROM alpine:latest
-WORKDIR /app
-COPY --from=builder /app/dist ./dist
+FROM nginx:alpine-perl
+
+COPY ./nginx.conf /etc/nginx/conf.d/default.conf
+COPY --from=builder /app/dist /usr/share/nginx/frontend
