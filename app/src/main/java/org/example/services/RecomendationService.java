@@ -67,12 +67,12 @@ public class RecomendationService {
         else {
             throw new IncorrectArgumentGivenException("calcTrackScore", "daytime", "Передано неопознанное значение daytime: " + daytime.name());
         }
-
-        Optional<AudioFeature> trackDaytimeFeature = audioFeatureRepository.findByIdTrackIdAndIdFeatureTypeId(track.getId(), daytimeFeature.get().getId());
-        if (trackDaytimeFeature.isPresent()) {
-            score += trackDaytimeFeature.get().getValue() * DAYTIME_CORRESPOND_WEIGHT;
+        if (daytimeFeature.isPresent()) {
+            Optional<AudioFeature> trackDaytimeFeature = audioFeatureRepository.findByIdTrackIdAndIdFeatureTypeId(track.getId(), daytimeFeature.get().getId());
+            if (trackDaytimeFeature.isPresent()) {
+                score += trackDaytimeFeature.get().getValue() * DAYTIME_CORRESPOND_WEIGHT;
+            }
         }
-        System.out.println("score: " + score + "trackId: " + track.getId());
 
         Optional<AudioFeatureType> fullListeningRateFeature = audioFeatureTypeRepository.findByName("full-listening-rate");
         if (fullListeningRateFeature.isPresent()) {

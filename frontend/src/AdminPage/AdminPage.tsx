@@ -67,7 +67,7 @@ export function AdminPage() {
       setIsModalOpen(true);
       return false;
     }
-    const level = parseInt(form.privilegeLevel, 10);
+    const level = Number(form.privilegeLevel);
     if (isNaN(level) || level < 1 || level > 100) {
       setModalMessage('Уровень привилегий должен быть числом от 1 до 100');
       setIsModalOpen(true);

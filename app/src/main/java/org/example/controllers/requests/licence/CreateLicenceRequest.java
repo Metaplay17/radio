@@ -5,7 +5,6 @@ import java.time.LocalDate;
 import org.example.controllers.requests.track.TrackSignature;
 
 import jakarta.validation.constraints.NotNull;
-import jakarta.validation.constraints.PastOrPresent;
 import jakarta.validation.constraints.Positive;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -19,6 +18,6 @@ public class CreateLicenceRequest {
     @Positive(message = "Длительность лицензии должна быть положительным числом дней")
     private int duration;
 
-    @PastOrPresent(message = "Дата регистрации лицензии не может быть в будущем")
+    @NotNull(message = "Дата регистрации лицензии не может быть пустой")
     private LocalDate registered;
 }

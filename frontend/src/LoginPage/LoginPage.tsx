@@ -77,7 +77,7 @@ const Login = () => {
         <h1 className={styles.title}>Система персонализированных рекомендаций музыкального контента</h1>
         <h2 className={styles.subtitle}>Вход</h2>
         
-        <form className={styles.form}>
+        <div className={styles.form}>
           <div className={styles.inputGroup}>
             <label htmlFor="username" className={styles.label}>
               Имя пользователя
@@ -117,7 +117,7 @@ const Login = () => {
           >
             {isLoading ? 'Вход...' : 'Войти'}
           </button>
-        </form>
+        </div>
       </div>
     </div>
   );

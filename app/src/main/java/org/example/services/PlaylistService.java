@@ -52,7 +52,6 @@ public class PlaylistService {
         LocalDate date = request.getDate();
         List<Track> tracks = trackRepository.findAllWithActiveLicense(date);
         tracks = rotationService.getAvailableTracks(tracks, date);
-        System.out.println(tracks.size());
 
         Map<Double, Track> trackScores = new HashMap<Double, Track>();
         PriorityQueue<Double> queue = new PriorityQueue<Double>();
