@@ -1,0 +1,1 @@
+ALTER TABLE playlists_tracks DROP COLUMN number;
