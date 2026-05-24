@@ -31,20 +31,23 @@ public class RecomendationService {
     
     @NotNullArg
     public double calcAnchorTrackScore(Track anchorTrack, Track assessedTrack) {
-        int score = 50;
-        List<AudioFeature> assessedAudioFeatures = assessedTrack.getAudioFeatures();
-        Map<Object, Object> assessedFeatureMap = assessedAudioFeatures.stream().collect(Collectors.toMap(f -> f.getAudioFeatureType().getId(), f -> f.getValue()));
-
-        List<AudioFeature> anchorAudioFeatures = anchorTrack.getAudioFeatures();
-        Map<Object, Object> anchorFeatureMap = anchorAudioFeatures.stream().collect(Collectors.toMap(f -> f.getAudioFeatureType().getId(), f -> f.getValue()));
+        double score = 50.0;
+        
+        Map<Object, Double> assessedFeatureMap = assessedTrack.getAudioFeatures().stream()
+            .collect(Collectors.toMap(f -> f.getAudioFeatureType().getId(), AudioFeature::getValue));
+            
+        Map<Object, Double> anchorFeatureMap = anchorTrack.getAudioFeatures().stream()
+            .collect(Collectors.toMap(f -> f.getAudioFeatureType().getId(), AudioFeature::getValue));
 
         for (Object featureTypeId : anchorFeatureMap.keySet()) {
             if (assessedFeatureMap.containsKey(featureTypeId)) {
-                Double delta = -1 * ((((AudioFeature)assessedFeatureMap.get(featureTypeId)).getValue() - ((AudioFeature)anchorFeatureMap.get(featureTypeId)).getValue()) - 0.4);
+                double assessedVal = assessedFeatureMap.get(featureTypeId);
+                double anchorVal   = anchorFeatureMap.get(featureTypeId);
+                
+                double delta = anchorVal - assessedVal + 0.4;
                 score += delta * 100;
             }
         }
-
         return score;
     }
 
