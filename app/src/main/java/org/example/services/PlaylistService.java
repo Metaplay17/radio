@@ -5,7 +5,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.Optional;
 import java.util.PriorityQueue;
 
 import org.example.aspects.NotNullArg;
@@ -48,13 +47,6 @@ public class PlaylistService {
 
     @NotNullArg
     public List<TrackScoreDto> formPlaylist(FormPlaylistRequest request) {
-        if (request.getAnchorTrack().isPresent()) {
-            Optional<TrackSignature> anchorTrackSignature = new TrackSignature(request.getAnchorTrack().get().split(" - ")[0], request.getAnchorTrack().get().split(" - ")[1], 60);
-        }
-        else {
-            Optional<TrackSignature> anchorTrackSignature = Optional.empty();
-        }
-        
         LocalDate date = request.getDate();
         List<Track> tracks = trackRepository.findAllWithActiveLicense(date);
         tracks = rotationService.getAvailableTracks(tracks, date);
@@ -63,9 +55,12 @@ public class PlaylistService {
         PriorityQueue<Double> queue = new PriorityQueue<Double>();
         List<TrackScoreDto> result = new ArrayList<TrackScoreDto>();
 
-        if (anchorTrackSignature.isPresent()) {
-            Track anchorTrack = trackRepository.findByTitleAndArtistName(anchorTrackSignature.get().getTitle(), anchorTrackSignature.get().getArtistName()).orElseThrow(
-                () -> new NotFoundException("Трека с названием = " + anchorTrackSignature.get().getTitle() + " и исполнителем " + anchorTrackSignature.get().getArtistName() + " нет в базе"));
+        if (request.getAnchorTrack().isPresent()) {
+            if (request.getAnchorTrack().get().split(" - ").length != 2) {
+                throw new IllegalArgumentException("Неверный формат трека");
+            }
+            Track anchorTrack = trackRepository.findByTitleAndArtistName(request.getAnchorTrack().get().split(" - ")[0], request.getAnchorTrack().get().split(" - ")[1]).orElseThrow(
+                () -> new NotFoundException("Трека с названием = " + request.getAnchorTrack().get().split(" - ")[0] + " и исполнителем " + request.getAnchorTrack().get().split(" - ")[1] + " нет в базе"));
 
             for (Track track : tracks) {
                 double score = recomendationService.calcAnchorTrackScore(anchorTrack, track);
