@@ -48,7 +48,13 @@ public class PlaylistService {
 
     @NotNullArg
     public List<TrackScoreDto> formPlaylist(FormPlaylistRequest request) {
-        Optional<TrackSignature> anchorTrackSignature = request.getAnchorTrack();
+        if (request.getAnchorTrack().isPresent()) {
+            Optional<TrackSignature> anchorTrackSignature = new TrackSignature(request.getAnchorTrack().get().split(" - ")[0], request.getAnchorTrack().get().split(" - ")[1], 60);
+        }
+        else {
+            Optional<TrackSignature> anchorTrackSignature = Optional.empty();
+        }
+        
         LocalDate date = request.getDate();
         List<Track> tracks = trackRepository.findAllWithActiveLicense(date);
         tracks = rotationService.getAvailableTracks(tracks, date);

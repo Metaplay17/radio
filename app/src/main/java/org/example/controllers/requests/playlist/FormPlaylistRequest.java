@@ -32,5 +32,5 @@ public class FormPlaylistRequest {
     @Min(value = 1, message = "День недели должен быть от 1 до 7")
     @Max(value = 7, message = "День недели должен быть от 1 до 7")
     private Integer weekday;
-    private Optional<TrackSignature> anchorTrack;
+    private Optional<String> anchorTrack;
 }
